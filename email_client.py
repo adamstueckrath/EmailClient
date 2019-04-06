@@ -77,6 +77,10 @@ class Emailer():
             self._login()
 
     def _login(self):
+        """
+
+        :return:
+        """
         self._smtp = smtplib.SMTP(host=self._host, port=self._port, timeout=10)
         self._smtp.starttls()
         self._smtp.login(self._sender_email, self._password)
@@ -109,7 +113,7 @@ class Emailer():
 
         return Emailer(config=config, **kwargs)
 
-    def email_template(self, template_dir, template_name):
+    def _email_template(self, template_path):
         """
         Opens, reads, and returns the given template file name as a string.
 
@@ -125,10 +129,8 @@ class Emailer():
             email_template = f.read()
         return email_template
 
-    message = self.get_email_template(email_template)
-    message = message.format(**template_args)
-
-    def send_email(self, destinations, subject, text, email_temp=None, attach_files=None):
+    def send_email(self, destinations, subject, text=None,
+                   template_path=None, template_args=None, attach_files=None):
         """
         Send an email to the emails listed in destinations
         with the given message.
@@ -145,7 +147,11 @@ class Emailer():
             subject header of your email
         text : str
             the body text of your email
-        files : list
+        template_path : str
+            path of email template text file
+        template_args : dict
+            keyword arguments to format email template
+        attach_files : list
             list of file paths to attached to email
 
         Returns
@@ -159,6 +165,11 @@ class Emailer():
         message['To'] = '; '.join(destinations)
         message['Date'] = datetime.datetime.utcnow().isoformat()
         message['Subject'] = subject
+
+        # check if email template is used
+        if template_path:
+            text = self._email_template(template_path)
+            text.format(**template_args)
 
         # attach text part of message
         message.attach(MIMEText(text))
@@ -174,7 +185,6 @@ class Emailer():
             message.attach(part)
 
         else:
-            # not sure about this logic
             if not self._logged_in:
                 self._login()
             try:
