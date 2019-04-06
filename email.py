@@ -77,3 +77,27 @@ class Email():
         self._smtp.starttls()
         self._smtp.login(self._sender_email, self._password)
         self._logged_in = True
+
+    @staticmethod
+    def from_login(**kwargs):
+        """
+        Get prompted for login information at your command line.
+        All keyword args are passed to the initializer Email().
+        """
+        config = {}
+        config['sender_email'] = raw_input('Email account to send from: ')
+        if '@outlook.com' in config['sender_email']:
+            port_message = 'Port # (likely 587): '
+            host_message = 'Host URL (likely smtp.office365.com): '
+        elif '@gmail.com' in config['sender_email']:
+            port_message = 'Port # (likely 587): '
+            host_message = 'Host URL (likely smtp.gmail.com): '
+        else:
+            port_message = 'Port #: '
+            host_message = 'Host URL: '
+        config['port'] = int(raw_input(port_message))
+        config['host'] = raw_input(host_message)
+        config['password'] = getpass.getpass(
+            'Email password (nothing will be shown as you type):'
+        )
+        return Email(config=config, **kwargs)
