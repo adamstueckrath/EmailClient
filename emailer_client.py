@@ -84,7 +84,8 @@ class Emailer:
         self._smtp.login(self._sender_email, self._password)
         self._logged_in = True
 
-    def _email_template(self, template_path):
+    @staticmethod
+    def email_template(template_path):
         """
         Opens, reads, and returns the given template file path as a string.
         :param template_path: str
@@ -93,12 +94,10 @@ class Emailer:
         """
         # try and except logic here
         try:
-            temp_path = Path(template_path)
+            template_text = Path(template_path).read_text()
         except:
             raise
-        with open(template_path) as f:
-            email_template = f.read()
-        return email_template
+        return template_text
 
     @staticmethod
     def from_login(**kwargs):
