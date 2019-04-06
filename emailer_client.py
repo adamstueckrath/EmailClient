@@ -35,7 +35,7 @@ class Emailer:
               - If neither config nor environment variable is set,
                 then we attempt to guess the host from the
                 sender_email.
-        :parelay_login: bool
+        :delay_login: bool
             if True, no login attempt will be made until send_mail
             is called and block_sending is False. Otherwise, a login
             attempt will be made at construction time.
