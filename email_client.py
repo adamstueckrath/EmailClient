@@ -2,14 +2,14 @@ import os
 import getpass
 import datetime
 import smtplib
-import pathlib
+from pathlib import Path
 from email.mime.base import MIMEBase
 from email.mime.text import MIMEText
 from email.encoders import encode_base64
 from email.mime.multipart import MIMEMultipart
 
 
-class Emailer():
+class Emailer:
     def __init__(self, config=None, delay_login=True):
         """
         The resolution order for the following information is
@@ -78,7 +78,7 @@ class Emailer():
 
     def _login(self):
         """
-
+        Use the config from input or environment variables to login.
         :return:
         """
         self._smtp = smtplib.SMTP(host=self._host, port=self._port, timeout=10)
@@ -86,11 +86,29 @@ class Emailer():
         self._smtp.login(self._sender_email, self._password)
         self._logged_in = True
 
+    def _email_template(self, template_path):
+        """
+        Opens, reads, and returns the given template file name as a string.
+        :param template_path: str
+            file path for the email template
+        :return: string of template
+        """
+        # try and except logic here
+        try:
+            temp_path = Path(template_path)
+        except:
+            raise
+        with open(template_path) as f:
+            email_template = f.read()
+        return email_template
+
     @staticmethod
     def from_login(**kwargs):
         """
         Get prompted for login information at your command line.
         All keyword args are passed to the initializer Emailer().
+        :param kwargs: input from user
+        :return: Initialized Emailer() from input values.
         """
         config = dict()
         config['sender_email'] = input('Email account to send from: ')
@@ -113,22 +131,6 @@ class Emailer():
 
         return Emailer(config=config, **kwargs)
 
-    def _email_template(self, template_path):
-        """
-        Opens, reads, and returns the given template file name as a string.
-
-        Inputs
-        ------
-        template_name: str
-            String of file name located in the email_templates dir.
-        """
-        # try and except logic here
-        template_folder = os.path.join(os.path.split(__file__)[0], 'email_templates')
-        template_path = os.path.join(template_folder, template_name)
-        with open(template_path) as f:
-            email_template = f.read()
-        return email_template
-
     def send_email(self, destinations, subject, text=None,
                    template_path=None, template_args=None, attach_files=None):
         """
@@ -138,26 +140,19 @@ class Emailer():
         The message will auto-fill in the FROM, TO,
         and DATE field, and the SUBJECT field will be filled
         in with your given subject.
-
-        Parameters
-        ----------
-        destinations : list
+        :param destinations: list
             list of strings of email addresses
-        subject : str
+        :param subject: str
             subject header of your email
-        text : str
+        :param text: str
             the body text of your email
-        template_path : str
+        :param template_path:
             path of email template text file
-        template_args : dict
+        :param template_args: dict
             keyword arguments to format email template
-        attach_files : list
+        :param attach_files: list
             list of file paths to attached to email
-
-        Returns
-        -------
-        failed : dict
-            dict of addresses that it failed to send to.
+        :return:
         """
         # create multi-part message for text and attachments
         message = MIMEMultipart()
@@ -183,7 +178,6 @@ class Emailer():
             part.add_header('Content-Disposition',
                             'attachment', filename=os.path.basename(path))
             message.attach(part)
-
         else:
             if not self._logged_in:
                 self._login()
@@ -192,14 +186,17 @@ class Emailer():
             except smtplib.SMTPServerDisconnected:
                 self._login()
                 self._smtp.sendmail(self._sender_email, destinations, message.as_string())
-
         return
 
 
 if __name__ == '__main__':
+    # create emailer object from input
     email = Emailer.from_login()
+
+    # get email destination, subject, and text from input
     email_destination = input('Email account to send to: ')
     email_subject = input('Email subject: ')
     email_text = input('Email text: ')
-    email.send_email([email_destination], email_subject, email_text)
 
+    # send email away!
+    email.send_email([email_destination], email_subject, email_text)
