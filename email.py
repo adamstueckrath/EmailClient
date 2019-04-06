@@ -86,7 +86,7 @@ class Email():
         """
         config = {}
         config['sender_email'] = raw_input('Email account to send from: ')
-        if '@outlook.com' in config['sender_email']:
+        if '@outlook.com' or '@hotmail.com' in config['sender_email']:
             port_message = 'Port # (likely 587): '
             host_message = 'Host URL (likely smtp.office365.com): '
         elif '@gmail.com' in config['sender_email']:
@@ -101,3 +101,66 @@ class Email():
             'Email password (nothing will be shown as you type):'
         )
         return Email(config=config, **kwargs)
+
+    def send_mail(self, destinations, subject, text, files=None):
+        """
+        Send an email to the emails listed in destinations
+        with the given message.
+
+        The message will auto-fill in the FROM, TO,
+        and DATE field, and the SUBJECT field will be filled
+        in with your given subject.
+
+        Parameters
+        ----------
+        destinations : list
+            list of strings of email addresses
+        subject : str
+            subject header of your email
+        text : str
+            the body text of your email
+        files : list
+            list of file paths to attached to email
+
+        Returns
+        -------
+        failed : dict
+            dict of addresses that it failed to send to.
+        """
+        # create multi-part message for text and attachments
+        message = MIMEMultipart()
+        message['From'] = self._sender_email
+        message['To'] = '; '.join(destinations)
+        message['Date'] = datetime.datetime.utcnow().isoformat() + 'Z'
+        message['Subject'] = subject
+
+        # attach text part of message
+        message.attach(MIMEText(text))
+
+        # iterterate through files to attach
+        for path in files or []:
+            part = MIMEBase('application', "octet-stream")
+            with open(path, 'rb') as file:
+                part.set_payload(file.read())
+            encode_base64(part)
+            part.add_header('Content-Disposition',
+                            'attachment', filename=os.path.basename(path))
+            message.attach(part)
+
+        if block_sending is None:
+            block_sending = self.block_sending
+
+        if block_sending:
+            print(message)
+            failed = {}
+        else:
+            if not self._logged_in:
+                self._login()
+            try:
+                failed = self._smtp.sendmail(self._sender_email, destinations, message.as_string())
+            except smtplib.SMTPServerDisconnected:
+                self._login()
+                failed = self._smtp.sendmail(self._sender_email, destinations, message.as_string())
+
+        return failed
+
