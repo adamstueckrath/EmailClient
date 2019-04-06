@@ -95,7 +95,7 @@ class Emailer:
         # try and except logic here
         try:
             template_text = Path(template_path).read_text()
-        except:
+        except FileNotFoundError:
             raise
         return template_text
 
@@ -164,7 +164,7 @@ class Emailer:
 
         # check if email template is used
         if template_path:
-            text = self._email_template(template_path)
+            text = self.email_template(template_path)
             text.format(**template_args)
 
         # attach text part of message
@@ -199,7 +199,7 @@ if __name__ == '__main__':
     # get email destination, subject, and text from input
     email_destination = input('Email account to send to: ')
     email_subject = input('Email subject: ')
-    email_text = input('Email text: ')
+    email_text = input('Email template path: ')
 
     # send email away!
-    email.send_email([email_destination], email_subject, email_text)
+    email.send_email([email_destination], email_subject, template_path=email_text)
