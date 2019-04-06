@@ -105,7 +105,7 @@ class Email():
         )
         return Email(config=config, **kwargs)
 
-    def send_mail(self, destinations, subject, text, files=None):
+    def send_email(self, destinations, subject, text, files=None):
         """
         Send an email to the emails listed in destinations
         with the given message.
@@ -134,7 +134,7 @@ class Email():
         message = MIMEMultipart()
         message['From'] = self._sender_email
         message['To'] = '; '.join(destinations)
-        message['Date'] = datetime.datetime.utcnow().isoformat() + 'Z'
+        message['Date'] = datetime.datetime.utcnow().isoformat()
         message['Subject'] = subject
 
         # attach text part of message
@@ -150,20 +150,14 @@ class Email():
                             'attachment', filename=os.path.basename(path))
             message.attach(part)
 
-        if block_sending is None:
-            block_sending = self.block_sending
-
-        if block_sending:
-            print(message)
-            failed = {}
         else:
             if not self._logged_in:
                 self._login()
             try:
-                failed = self._smtp.sendmail(self._sender_email, destinations, message.as_string())
+                self._smtp.sendmail(self._sender_email, destinations, message.as_string())
             except smtplib.SMTPServerDisconnected:
                 self._login()
-                failed = self._smtp.sendmail(self._sender_email, destinations, message.as_string())
+                self._smtp.sendmail(self._sender_email, destinations, message.as_string())
 
-        return failed
+        return
 
