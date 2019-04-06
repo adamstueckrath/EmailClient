@@ -12,32 +12,30 @@ from email.mime.multipart import MIMEMultipart
 class Emailer:
     def __init__(self, config=None, delay_login=True):
         """
-        The resolution order for the following information is
-        config -> environment variable -> guess
+        Welcome to the Emailer to send all of your emails!
 
-        Parameters
-        ----------
-        config : dict
-            dict with a subset of the following keys.
-                - sender_email : str
-                    - sender email.
-                    - equivalent environment variable: EMAIL_ADDRESS
-                - password : str
-                    - password of that email account.
-                    - equivalent environment variable: EMAIL_PASSWORD
-                - port : int
-                    - port number.
-                    - equivalent environment variable: EMAIL_PORT
-                    - If neither config nor environment variable is set,
-                      then we attempt to guess the port number from the
-                      sender_email.
-                - host : str
-                    - domain name of host.
-                    - equivalent environment variable: EMAIL_HOST
-                    - If neither config nor environment variable is set,
-                      then we attempt to guess the host from the
-                      sender_email.
-        delay_login : bool
+        Order for the following information is
+        config -> environment variable -> guess
+        :param config: dict
+            sender_email : str
+              - sender email.
+              - equivalent environment variable: EMAIL_ADDRESS
+            password : str
+              - password of that email account.
+              - equivalent environment variable: EMAIL_PASSWORD
+            port : int
+              - port number.
+              - equivalent environment variable: EMAIL_PORT
+              - If neither config nor environment variable is set,
+                then we attempt to guess the port number from the
+                sender_email.
+            host : str
+              - domain name of host.
+              - equivalent environment variable: EMAIL_HOST
+              - If neither config nor environment variable is set,
+                then we attempt to guess the host from the
+                sender_email.
+        :parelay_login: bool
             if True, no login attempt will be made until send_mail
             is called and block_sending is False. Otherwise, a login
             attempt will be made at construction time.
@@ -88,7 +86,7 @@ class Emailer:
 
     def _email_template(self, template_path):
         """
-        Opens, reads, and returns the given template file name as a string.
+        Opens, reads, and returns the given template file path as a string.
         :param template_path: str
             file path for the email template
         :return: string of template
@@ -112,15 +110,19 @@ class Emailer:
         """
         config = dict()
         config['sender_email'] = input('Email account to send from: ')
+
         if ('@outlook.com' in config['sender_email']) or ('@hotmail.com' in config['sender_email']):
             port_message = 'Port # (likely 587): '
             host_message = 'Host URL (likely smtp.office365.com): '
+
         elif '@gmail.com' in config['sender_email']:
             port_message = 'Port # (likely 587): '
             host_message = 'Host URL (likely smtp.gmail.com): '
+
         elif '@yahoo.com' in config['sender_email']:
             port_message = 'Port # (likely 587): '
             host_message = 'Host URL (likely smtp.mail.yahoo.com): '
+
         else:
             port_message = 'Port #: '
             host_message = 'Host URL: '
@@ -178,6 +180,7 @@ class Emailer:
             part.add_header('Content-Disposition',
                             'attachment', filename=os.path.basename(path))
             message.attach(part)
+
         else:
             if not self._logged_in:
                 self._login()
@@ -186,6 +189,7 @@ class Emailer:
             except smtplib.SMTPServerDisconnected:
                 self._login()
                 self._smtp.sendmail(self._sender_email, destinations, message.as_string())
+
         return
 
 
