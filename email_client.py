@@ -2,13 +2,15 @@ import os
 import getpass
 import datetime
 import smtplib
+import pathlib
 from email.mime.base import MIMEBase
 from email.mime.text import MIMEText
 from email.encoders import encode_base64
 from email.mime.multipart import MIMEMultipart
 
+
 class Emailer():
-    def __init__(self, config=None, delay_login=True, from_input=False):
+    def __init__(self, config=None, delay_login=True):
         """
         The resolution order for the following information is
         config -> environment variable -> guess
@@ -43,39 +45,36 @@ class Emailer():
         if config is None:
             config = {}
 
-        if from_input:
-            self.from_login()
-        else:
-            self._sender_email = config.get('sender_email', os.getenv('EMAIL_ADDRESS'))
-            if not self._sender_email:
-                raise ValueError('Either config must contain "sender_email" or the '
-                                 'EMAIL_ADDRESS environment variable must '
-                                 'be set.')
+        self._sender_email = config.get('sender_email', os.getenv('EMAIL_ADDRESS'))
+        if not self._sender_email:
+            raise ValueError('Either config must contain "sender_email" or the '
+                             'EMAIL_ADDRESS environment variable must '
+                             'be set.')
 
-            self._password = config.get('password', os.getenv('EMAIL_PASSWORD'))
-            if not self._password:
-                raise ValueError('Either config must contain "password" or the '
-                                 'EMAIL_PASSWORD environment variable must '
-                                 'be set.')
+        self._password = config.get('password', os.getenv('EMAIL_PASSWORD'))
+        if not self._password:
+            raise ValueError('Either config must contain "password" or the '
+                             'EMAIL_PASSWORD environment variable must '
+                             'be set.')
 
-            self._port = config.get('port', os.getenv('EMAIL_PORT'))
-            if self._port is None:
-                self._port = 587
+        self._port = config.get('port', os.getenv('EMAIL_PORT'))
+        if self._port is None:
+            self._port = 587
 
-            self._host = config.get('host', os.getenv('EMAIL_HOST'))
-            if self._host is None:
-                if '@outlook.com' or '@hotmail.com' in self._sender_email:
-                    self._host = 'smtp.office365.com'
-                elif '@gmail.com' in self._sender_email:
-                    self._host = 'smtp.gmail.com'
-                elif '@yahoo.com' in self._sender_email:
-                    self._host = 'smtp.mail.yahoo.com'
-                else:
-                    raise ValueError('Cannot guess host given email.')
+        self._host = config.get('host', os.getenv('EMAIL_HOST'))
+        if self._host is None:
+            if '@outlook.com' or '@hotmail.com' in self._sender_email:
+                self._host = 'smtp.office365.com'
+            elif '@gmail.com' in self._sender_email:
+                self._host = 'smtp.gmail.com'
+            elif '@yahoo.com' in self._sender_email:
+                self._host = 'smtp.mail.yahoo.com'
+            else:
+                raise ValueError('Cannot guess host given email.')
 
-            self._logged_in = False
-            if not delay_login:
-                self._login()
+        self._logged_in = False
+        if not delay_login:
+            self._login()
 
     def _login(self):
         self._smtp = smtplib.SMTP(host=self._host, port=self._port, timeout=10)
@@ -89,9 +88,9 @@ class Emailer():
         Get prompted for login information at your command line.
         All keyword args are passed to the initializer Emailer().
         """
-        config = {}
+        config = dict()
         config['sender_email'] = input('Email account to send from: ')
-        if '@outlook.com' or '@hotmail.com' in config['sender_email']:
+        if ('@outlook.com' in config['sender_email']) or ('@hotmail.com' in config['sender_email']):
             port_message = 'Port # (likely 587): '
             host_message = 'Host URL (likely smtp.office365.com): '
         elif '@gmail.com' in config['sender_email']:
@@ -103,14 +102,33 @@ class Emailer():
         else:
             port_message = 'Port #: '
             host_message = 'Host URL: '
+
         config['port'] = int(input(port_message))
         config['host'] = input(host_message)
-        config['password'] = getpass.getpass(
-            'Email password (nothing will be shown as you type):'
-        )
+        config['password'] = getpass.getpass('Email password (nothing will be shown as you type): ')
+
         return Emailer(config=config, **kwargs)
 
-    def send_email(self, destinations, subject, text, files=None):
+    def email_template(self, template_dir, template_name):
+        """
+        Opens, reads, and returns the given template file name as a string.
+
+        Inputs
+        ------
+        template_name: str
+            String of file name located in the email_templates dir.
+        """
+        # try and except logic here
+        template_folder = os.path.join(os.path.split(__file__)[0], 'email_templates')
+        template_path = os.path.join(template_folder, template_name)
+        with open(template_path) as f:
+            email_template = f.read()
+        return email_template
+
+    message = self.get_email_template(email_template)
+    message = message.format(**template_args)
+
+    def send_email(self, destinations, subject, text, email_temp=None, attach_files=None):
         """
         Send an email to the emails listed in destinations
         with the given message.
@@ -145,8 +163,8 @@ class Emailer():
         # attach text part of message
         message.attach(MIMEText(text))
 
-        # iterterate through files to attach
-        for path in files or []:
+        # iterate through files to attach
+        for path in attach_files or []:
             part = MIMEBase('application', "octet-stream")
             with open(path, 'rb') as file:
                 part.set_payload(file.read())
@@ -156,6 +174,7 @@ class Emailer():
             message.attach(part)
 
         else:
+            # not sure about this logic
             if not self._logged_in:
                 self._login()
             try:
@@ -168,7 +187,9 @@ class Emailer():
 
 
 if __name__ == '__main__':
-    try:
-        Emailer() or Emailer().from_login()
-    except:
-        raise
+    email = Emailer.from_login()
+    email_destination = input('Email account to send to: ')
+    email_subject = input('Email subject: ')
+    email_text = input('Email text: ')
+    email.send_email([email_destination], email_subject, email_text)
+
