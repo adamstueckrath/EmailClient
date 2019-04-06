@@ -92,6 +92,9 @@ class Email():
         elif '@gmail.com' in config['sender_email']:
             port_message = 'Port # (likely 587): '
             host_message = 'Host URL (likely smtp.gmail.com): '
+        elif '@yahoo.com' in config['sender_email']:
+            port_message = 'Port # (likely 587): '
+            host_message = 'Host URL (likely smtp.mail.yahoo.com): '
         else:
             port_message = 'Port #: '
             host_message = 'Host URL: '
