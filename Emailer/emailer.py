@@ -43,13 +43,13 @@ class Emailer:
         if config is None:
             config = {}
 
-        self._sender_email = config.get('sender_email', os.getenv('EMAIL_ADDRESS'))
+        self._sender_email = config.get('sender_email', os.environ.get('EMAIL_ADDRESS'))
         if not self._sender_email:
             raise ValueError('Either config must contain "sender_email" or the '
                              'EMAIL_ADDRESS environment variable must '
                              'be set.')
 
-        self._password = config.get('password', os.getenv('EMAIL_PASSWORD'))
+        self._password = config.get('password', os.environ.get('EMAIL_PASSWORD'))
         if not self._password:
             raise ValueError('Either config must contain "password" or the '
                              'EMAIL_PASSWORD environment variable must '
@@ -61,7 +61,7 @@ class Emailer:
 
         self._host = config.get('host', os.getenv('EMAIL_HOST'))
         if self._host is None:
-            if '@outlook.com' or '@hotmail.com' in self._sender_email:
+            if ('@outlook.com' in self._sender_email) or ('@hotmail.com' in self._sender_email):
                 self._host = 'smtp.office365.com'
             elif '@gmail.com' in self._sender_email:
                 self._host = 'smtp.gmail.com'
@@ -103,7 +103,7 @@ class Emailer:
     def from_login(**kwargs):
         """
         Get prompted for login information at your command line.
-        All keyword args are passed to the initializer Emailer().
+        All keyword args are passed to initialize Emailer().
         :param kwargs: input from user
         :return: Initialized Emailer() from input values.
         """
