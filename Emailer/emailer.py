@@ -37,8 +37,8 @@ class Emailer:
                 sender_email.
         :delay_login: bool
             if True, no login attempt will be made until send_mail
-            is called and block_sending is False. Otherwise, a login
-            attempt will be made at construction time.
+            is called. Otherwise, a login attempt will be made
+            at construction time.
         """
         if config is None:
             config = {}
@@ -180,14 +180,13 @@ class Emailer:
                             'attachment', filename=os.path.basename(path))
             message.attach(part)
 
-        else:
-            if not self._logged_in:
-                self._login()
-            try:
-                self._smtp.sendmail(self._sender_email, destinations, message.as_string())
-            except smtplib.SMTPServerDisconnected:
-                self._login()
-                self._smtp.sendmail(self._sender_email, destinations, message.as_string())
+        if not self._logged_in:
+            self._login()
+        try:
+            self._smtp.sendmail(self._sender_email, destinations, message.as_string())
+        except smtplib.SMTPServerDisconnected:
+            self._login()
+            self._smtp.sendmail(self._sender_email, destinations, message.as_string())
 
         return
 
