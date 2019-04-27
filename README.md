@@ -20,6 +20,7 @@ The main use of this package is to integrate into your environment. The other us
 Integrated Example:
 
 
+
 Terminal Example: 
 ```
 # very handy email object that by default will sign into EMAIL_ADDRESS
