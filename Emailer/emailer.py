@@ -184,10 +184,9 @@ class Emailer:
             self._login()
         try:
             self._smtp.sendmail(self._sender_email, destinations, message.as_string())
-        except smtplib.SMTPServerDisconnected:
+        except (smtplib.SMTPConnectError, smtplib.SMTPServerDisconnected):
             self._login()
             self._smtp.sendmail(self._sender_email, destinations, message.as_string())
-
         return
 
 
