@@ -182,11 +182,15 @@ class Emailer:
 
         if not self._logged_in:
             self._login()
+
+        # handle disconnect and connection errors by quick login and attempt to send again
         try:
             self._smtp.sendmail(self._sender_email, destinations, message.as_string())
+
         except (smtplib.SMTPConnectError, smtplib.SMTPServerDisconnected):
             self._login()
             self._smtp.sendmail(self._sender_email, destinations, message.as_string())
+
         return
 
 
