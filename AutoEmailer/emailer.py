@@ -12,7 +12,7 @@ from email.mime.multipart import MIMEMultipart
 class Emailer:
     def __init__(self, config=None, delay_login=True):
         """
-        Welcome to the Emailer to send all of your emails!
+        Welcome to the Auto Emailer to send all of your emails!
 
         Order for the following information is
         config -> environment variable -> guess
@@ -199,9 +199,9 @@ if __name__ == '__main__':
     email = Emailer.from_login()
 
     # get email destination, subject, and text from input
-    email_destination = input('Email account to send to: ')
+    email_destination = input('Email destination: ')
     email_subject = input('Email subject: ')
-    email_text = input('Email template path: ')
+    email_text = input('Email text: ')
 
     # send email away!
-    email.send_email([email_destination], email_subject, template_path=email_text)
+    email.send_email([email_destination], email_subject, text=email_text)
