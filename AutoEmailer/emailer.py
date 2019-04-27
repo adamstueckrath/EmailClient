@@ -205,3 +205,4 @@ if __name__ == '__main__':
 
     # send email away!
     email.send_email([email_destination], email_subject, text=email_text)
+    print('Email Sent!')
