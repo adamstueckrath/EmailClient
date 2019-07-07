@@ -77,7 +77,6 @@ class Emailer:
     def _login(self):
         """
         Use the config from input or environment variables to login.
-        :return:
         """
         self._smtp = smtplib.SMTP(host=self._host, port=self._port, timeout=10)
         self._smtp.starttls()
@@ -89,8 +88,10 @@ class Emailer:
         """
         Get prompted for login information at your command line.
         All keyword args are passed to initialize Emailer().
+
         :param kwargs: input from user
-        :return: Initialized Emailer() from input values.
+        :return: Emailer() object
+            initialized emailer object from input values
         """
         config = dict()
         config['sender_email'] = input('Email account to send from: ')
@@ -121,9 +122,11 @@ class Emailer:
     def email_template(template_path):
         """
         Opens, reads, and returns the given template file path as a string.
+
         :param template_path: str
             file path for the email template
-        :return: string of template
+        :return: str
+            text of template file
         """
         # try and except logic here
         try:
@@ -141,6 +144,7 @@ class Emailer:
         The message will auto-fill in the FROM, TO,
         and DATE field, and the SUBJECT field will be filled
         in with your given subject.
+
         :param destinations: list
             list of strings of email addresses
         :param subject: str
@@ -153,7 +157,7 @@ class Emailer:
             keyword arguments to format email template
         :param attach_files: list
             list of file paths to attached to email
-        :return:
+        :return: nothing
         """
         # create multi-part message for text and attachments
         message = MIMEMultipart()
@@ -190,7 +194,7 @@ class Emailer:
         except (smtplib.SMTPConnectError, smtplib.SMTPServerDisconnected):
             self._login()
             self._smtp.sendmail(self._sender_email, destinations, message.as_string())
-
+        # add finally to the try/except block
         return
 
 
