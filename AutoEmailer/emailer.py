@@ -85,21 +85,6 @@ class Emailer:
         self._logged_in = True
 
     @staticmethod
-    def email_template(template_path):
-        """
-        Opens, reads, and returns the given template file path as a string.
-        :param template_path: str
-            file path for the email template
-        :return: string of template
-        """
-        # try and except logic here
-        try:
-            template_text = Path(template_path).read_text()
-        except FileNotFoundError:
-            raise
-        return template_text
-
-    @staticmethod
     def from_login(**kwargs):
         """
         Get prompted for login information at your command line.
@@ -131,6 +116,21 @@ class Emailer:
         config['password'] = getpass.getpass('Email password (nothing will be shown as you type): ')
 
         return Emailer(config=config, **kwargs)
+
+    @staticmethod
+    def email_template(template_path):
+        """
+        Opens, reads, and returns the given template file path as a string.
+        :param template_path: str
+            file path for the email template
+        :return: string of template
+        """
+        # try and except logic here
+        try:
+            template_text = Path(template_path).read_text()
+        except FileNotFoundError:
+            raise
+        return template_text
 
     def send_email(self, destinations, subject, text=None,
                    template_path=None, template_args=None, attach_files=None):

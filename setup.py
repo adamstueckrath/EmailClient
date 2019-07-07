@@ -1,9 +1,8 @@
 from setuptools import setup
-import AutoEmailer
 
 setup(name='AutoEmailer',
-      version=AutoEmailer.__version__,
-      description='Email client to make emails easier.',
+      version='0.0.1',
+      description='Email client to automate emails.',
       author='Adam Stueckrath',
       author_email='stueckrath.adam@gmail.com',
       url='',

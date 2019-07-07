@@ -1,5 +1,8 @@
 Auto Emailer
 ---
+Sending mail is done with Python's smtplib using an SMTP (Simple Mail Transfer
+Protocol) server.
+
 Checking and replying to email is a huge time sink. Of course, you can’t just write a program to handle all your email for you, since each message requires its own response. But you can still automate plenty of email-related tasks.
 
 The main utility of this program is to send emails you’re away from your computer. If you’re automating a task that takes a couple of hours to do, you don’t want to go back to your computer every few minutes to check on the program’s status. Instead, the program can just send you a friendly email when it’s done—freeing you to focus on more important things while you’re away from your computer.
