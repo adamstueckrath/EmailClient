@@ -31,7 +31,7 @@ class EmailerConfig:
                 then we attempt to guess the host from the
                 sender_email.
         """
-        self._config_dict = defaultdict()  # added defaultdict for guess logic
+        self._config_dict = dict()  # added defaultdict for guess logic
         self._config_file = file_path or os.getenv('EMAILER_CREDENTIALS', None)
         self._required = required or ['sender_email', 'password']
         if self._config_file is not None:
@@ -79,17 +79,20 @@ class EmailerConfig:
             required keys is missing.
         :return: None
         """
+        print('validate dict')
+        print(creds_dict)
         keys_needed = set(self._required if self._required is not None else [])
         print(keys_needed)
         missing = keys_needed.difference(creds_dict.keys())
         print('missing {}'.format(missing))
+
         if missing:
             raise ValueError('Credentials info was not in the '
                              'expected format, missing fields: {}.'.format(', '.join(missing))
                              )
 
     def build_config(self):
-        config = dict()
+        config = defaultdict()
         config['sender_email'] = self._config_dict.get('EMAILER_ADDRESS', os.environ.get('EMAILER_ADDRESS'))
         config['password'] = self._config_dict.get('EMAILER_PASSWORD', os.environ.get('EMAILER_PASSWORD'))
         config['port'] = self._config_dict.get('EMAILER_PORT', os.getenv('EMAILER_PORT'))
