@@ -4,7 +4,9 @@ import io
 
 
 class Credentials:
-    """Credentials using OAuth 2.0 access and refresh tokens."""
+    """
+
+    """
 
     def __init__(self, sender_email=None, password=None,
                  port=None, host=None):
@@ -59,7 +61,7 @@ class Credentials:
         Raises:
             ValueError: If the info is not in the expected format.
         """
-        keys_needed = {'emailer_sender', 'emailer_password', 'emailer_post', 'emailer_host'}
+        keys_needed = {'emailer_sender', 'emailer_password', 'emailer_port', 'emailer_host'}
         missing = keys_needed.difference(six.iterkeys(info))
 
         if missing:
