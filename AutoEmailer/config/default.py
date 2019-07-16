@@ -3,6 +3,18 @@ import environment_vars
 import os
 
 
+def _get_settings_from_environ():
+    """
+    NOT IN USE. FOR FUTURE VERSION.
+
+    :return:
+    """
+    # for key in environment_vars:
+    #     if key in os.environ:
+    #         return os.environ[key]
+    return
+
+
 def _get_explicit_environ_credential_file():
     """
     Gets file path from emailer_credentials environment
@@ -27,7 +39,6 @@ def _get_explicit_environ_credentials():
 
     :return: class
         config.credentials.Credentials: The constructed credentials.
-
     :raises: EnvironmentError
         If credentials were found and are invalid.
     """
