@@ -69,7 +69,7 @@ def _get_explicit_environ_credentials():
 def default():
     """
     Gets the default credentials for the current environment. Default credentials
-    provides an easy way to obtain credentials to call AutoEmailer.
+    provides an easy way to obtain credentials to call auto_emailer.
     This function acquires credentials from the environment in the following
     order:
     1. If the environment variable `emailer_credentials` is set

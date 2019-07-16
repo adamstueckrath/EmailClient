@@ -1,6 +1,7 @@
 import six
 import json
 import io
+import getpass
 
 
 class Credentials:
@@ -60,6 +61,45 @@ class Credentials:
         return self._host
 
     @staticmethod
+    def from_login(**kwargs):
+        """
+        NOT IN USE. FOR FUTURE VERSION.
+
+        Get prompted for login information at your command line.
+        All keyword args are passed to initialize Credentials().
+
+        :param kwargs: input from user
+            Initialize credentials object from input values
+        :return: class
+            config.credentials.Credentials: The constructed credentials.
+        """
+        # config = dict()
+        # config['sender_email'] = input('Email account to send from: ')
+        #
+        # if ('@outlook.com' in config['sender_email']) or ('@hotmail.com' in config['sender_email']):
+        #     port_message = 'Port # (likely 587): '
+        #     host_message = 'Host URL (likely smtp.office365.com): '
+        #
+        # elif '@gmail.com' in config['sender_email']:
+        #     port_message = 'Port # (likely 587): '
+        #     host_message = 'Host URL (likely smtp.gmail.com): '
+        #
+        # elif '@yahoo.com' in config['sender_email']:
+        #     port_message = 'Port # (likely 587): '
+        #     host_message = 'Host URL (likely smtp.mail.yahoo.com): '
+        #
+        # else:
+        #     port_message = 'Port #: '
+        #     host_message = 'Host URL: '
+        #
+        # config['port'] = int(input(port_message))
+        # config['host'] = input(host_message)
+        # config['password'] = getpass.getpass('Email password (nothing will be shown as you type): ')
+        #
+        # return Credentials(**kwargs)
+        return
+
+    @staticmethod
     def fill_missing_user_info(info):
         """
         If `emailer_port` or `emailer_host` is not set,
@@ -67,7 +107,7 @@ class Credentials:
         from the `emailer_sender`.
 
         :param info: dict
-            The authorized user info in AutoEmailer format.
+            The authorized user info in auto_emailer format.
         :return: dict
             Constructed user credentials.
         :raises: ValueError
@@ -93,7 +133,7 @@ class Credentials:
         Creates a Credentials instance from parsed authorized user info.
 
         :param info: dict
-            The authorized user info in AutoEmailer format.
+            The authorized user info in auto_emailer format.
         :return: class
             config.credentials.Credentials: The constructed credentials.
         :raises: ValueError
