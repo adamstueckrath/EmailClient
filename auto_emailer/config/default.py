@@ -1,5 +1,5 @@
-from credentials import Credentials
-import environment_vars
+from .credentials import Credentials
+from auto_emailer.config import environment_vars
 import os
 
 
@@ -95,7 +95,8 @@ def default():
             return credentials
 
     raise EnvironmentError(
-        'Could not automatically determine credentials. Please set {env} or '
-        'explicitly set environment credentials and re-run the application. For more'
+        'Could not automatically determine credentials. '
+        'Please set {env} or explicitly set environment '
+        'credentials and re-run the application. For more '
         'information, please see config.environment_vars'.format(env=environment_vars.CREDENTIALS_ENVIR_PATH)
     )

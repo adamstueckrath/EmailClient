@@ -1,7 +1,7 @@
 import os
 import datetime
 import smtplib
-from auto_emailer.config import credentials, default
+from .config import credentials, default
 from pathlib import Path
 from email.mime.base import MIMEBase
 from email.mime.text import MIMEText
@@ -24,11 +24,13 @@ class Emailer:
         """
         if (config is not None and
                 not isinstance(config, credentials.Credentials)):
-            raise ValueError('Emailer library only supports credentials from auto_emailer.config '
-                             'See auto_emailer.config.credentials and auto_emailer.config.environment_vars '
+            raise ValueError('Emailer library only supports credentials from '
+                             'auto_emailer.config See auto_emailer.config.credentials '
+                             'and auto_emailer.config.environment_vars '
                              'for help on authentication with this library.')
         if config is None:
-            self._config = default.default()
+            self._config = default()
+
         self._logged_in = False
         if not delay_login:
             self._login()

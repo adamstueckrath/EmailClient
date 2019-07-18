@@ -1,3 +1,3 @@
-# from .credentials import Credentials
-# from .environment_vars import *
-# from .default import *
+from .credentials import Credentials
+from auto_emailer.config import environment_vars
+from .default import default
