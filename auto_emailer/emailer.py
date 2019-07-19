@@ -40,6 +40,19 @@ class Emailer:
         if not delay_login:
             self._login()
 
+    @property
+    def logged_in(self):
+        """
+        :return: bool if user is logged in or not.
+        """
+        return self._logged_in
+
+    def _logout(self):
+        """
+        Quits the connection to the smtp server.
+        """
+        self._smtp.quit()
+
     def _login(self):
         """
         Uses the class property config to login.
@@ -118,9 +131,8 @@ class Emailer:
         # handle disconnect and connection errors by quick login and attempt to send again
         try:
             self._smtp.sendmail(self._config.sender_email, destinations, message.as_string())
-
-        except (smtplib.SMTPConnectError, smtplib.SMTPServerDisconnected):
+        except smtplib.SMTPConnectError:
             self._login()
             self._smtp.sendmail(self._config.sender_email, destinations, message.as_string())
         finally:
-            raise NotImplementedError('error')
+            self._logout()

@@ -30,6 +30,8 @@ class Credentials:
         self._sender_email = sender_email
         self._password = password
         self._port = port
+        # TODO !!!!!!!!!!!!!!!!!!!
+        # raise warning if port and host not set
         self._host = host
 
     @property
