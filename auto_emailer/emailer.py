@@ -28,8 +28,13 @@ class Emailer:
                              'auto_emailer.config See auto_emailer.config.credentials '
                              'and auto_emailer.config.environment_vars '
                              'for help on authentication with this library.')
-        if config is None:
+        elif config is None:
             self._config = default()
+        elif isinstance(config, credentials.Credentials):
+            self._config = config
+        else:
+            raise ValueError('Unknown credential configuration. Please '
+                             'consult the docs: ')
 
         self._logged_in = False
         if not delay_login:
