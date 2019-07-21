@@ -1,7 +1,7 @@
 import os
 import datetime
 import smtplib
-from .config import credentials, default
+from .config import credentials, default_credentials
 from pathlib import Path
 from email.mime.base import MIMEBase
 from email.mime.text import MIMEText
@@ -29,7 +29,7 @@ class Emailer:
                              'and auto_emailer.config.environment_vars '
                              'for help on authentication with this library.')
         elif config is None:
-            self._config = default()
+            self._config = default_credentials()
         elif isinstance(config, credentials.Credentials):
             self._config = config
         else:

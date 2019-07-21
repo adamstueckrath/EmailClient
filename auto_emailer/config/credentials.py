@@ -2,6 +2,8 @@ import six
 import json
 import io
 import getpass
+import warnings
+from auto_emailer.config import environment_vars
 
 
 class Credentials:
@@ -30,9 +32,14 @@ class Credentials:
         self._sender_email = sender_email
         self._password = password
         self._port = port
-        # TODO !!!!!!!!!!!!!!!!!!!
-        # raise warning if port and host not set
         self._host = host
+        if (self._port is None) or (self._host is None):
+            warnings.simplefilter("always")
+            warnings.warn('If explicitly passing args to initialize Credentials, '
+                          'please pass in `port` and `host` or use environment '
+                          'variables for configuration {} and {}'.format(environment_vars.ENVIR_PORT,
+                                                                         environment_vars.ENVIR_HOST),
+                          )
 
     @property
     def sender_email(self):
