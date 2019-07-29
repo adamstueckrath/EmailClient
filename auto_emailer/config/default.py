@@ -24,9 +24,8 @@ def _get_explicit_environ_credential_file():
         config.credentials.Credentials: The constructed credentials.
     """
     explicit_file = os.environ.get(environment_vars.CREDENTIALS_ENVIR_PATH)
-
     if explicit_file is not None:
-        credentials = Credentials.from_authorized_user_file(os.environ[environment_vars.CREDENTIALS_ENVIR_PATH])
+        credentials = Credentials.from_authorized_user_file(explicit_file)
         return credentials
     else:
         return None
