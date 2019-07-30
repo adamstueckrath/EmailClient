@@ -1,7 +1,6 @@
 import six
 import json
 import io
-import getpass
 import warnings
 from auto_emailer.config import environment_vars
 
@@ -68,45 +67,6 @@ class Credentials:
         :return: SMTP server host name.
         """
         return self._host
-
-    @staticmethod
-    def from_login(**kwargs):
-        """
-        NOT IN USE. FOR FUTURE VERSION.
-
-        Get prompted for login information at your command line.
-        All keyword args are passed to initialize Credentials().
-
-        :param kwargs: input from user
-            Initialize credentials object from input values
-        :return: class
-            config.credentials.Credentials: The constructed credentials.
-        """
-        # config = dict()
-        # config['sender_email'] = input('Email account to send from: ')
-        #
-        # if ('@outlook.com' in config['sender_email']) or ('@hotmail.com' in config['sender_email']):
-        #     port_message = 'Port # (likely 587): '
-        #     host_message = 'Host URL (likely smtp.office365.com): '
-        #
-        # elif '@gmail.com' in config['sender_email']:
-        #     port_message = 'Port # (likely 587): '
-        #     host_message = 'Host URL (likely smtp.gmail.com): '
-        #
-        # elif '@yahoo.com' in config['sender_email']:
-        #     port_message = 'Port # (likely 587): '
-        #     host_message = 'Host URL (likely smtp.mail.yahoo.com): '
-        #
-        # else:
-        #     port_message = 'Port #: '
-        #     host_message = 'Host URL: '
-        #
-        # config['port'] = int(input(port_message))
-        # config['host'] = input(host_message)
-        # config['password'] = getpass.getpass('Email password (nothing will be shown as you type): ')
-        #
-        # return Credentials(**kwargs)
-        return
 
     @staticmethod
     def fill_missing_user_info(info):

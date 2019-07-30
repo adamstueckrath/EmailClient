@@ -1,10 +1,18 @@
+from pathlib import Path
+import json
 import unittest
 from unittest import mock
+from auto_emailer.config import default, credentials
+
+DATA_DIR = Path(__file__).resolve().parents[1] / 'data'
+MOCK_USER_JSON_FILE = str(DATA_DIR / 'mock_credentials.json')
+MOCK_USER_CSV_FILE = str(DATA_DIR / 'mock_credentials.csv')
+
+
 
 
 def _make_credentials():
     import auto_emailer.config.credentials
-
     return mock.Mock(spec=auto_emailer.config.credentials.Credentials)
 
 
