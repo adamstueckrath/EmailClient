@@ -1,20 +1,21 @@
-from pathlib import Path
 import json
 import unittest
 from unittest import mock
+from pathlib import Path
 from auto_emailer.config import default, credentials
 
 DATA_DIR = Path(__file__).resolve().parents[1] / 'data'
-MOCK_USER_JSON_FILE = str(DATA_DIR / 'mock_credentials.json')
+MOCK_USER_JSON_FILE = str(DATA_DIR / 'mock_envir_credentials.json')
 MOCK_USER_CSV_FILE = str(DATA_DIR / 'mock_credentials.csv')
 
 
-def _get_mock_credentials():
-    with open(MOCK_USER_JSON_FILE, 'r') as creds:
+def _get_mock_credentials(file):
+    with open(file, 'r') as creds:
         return json.load(creds)
 
 
 class TestDefault(unittest.TestCase):
+
     @mock.patch('os.environ', {'emailer_credentials': None})
     def test_explicit_environ_credential_no_file(self):
         """
@@ -67,7 +68,7 @@ class TestDefault(unittest.TestCase):
         with self.assertRaises(EnvironmentError):
             default._get_explicit_environ_credentials()
 
-    @mock.patch('os.environ', _get_mock_credentials())
+    @mock.patch('os.environ', _get_mock_credentials(MOCK_USER_JSON_FILE))
     @mock.patch('auto_emailer.config.default.Credentials.from_authorized_user_info',
                 return_value=credentials.Credentials)
     def test_get_explicit_environ_credentials_creds(self, mock_creds):
@@ -108,7 +109,7 @@ class TestDefault(unittest.TestCase):
         self.assertEqual(mock_explicit.call_count, 1)
         self.assertEqual(mock_environ.call_count, 0)
 
-    @mock.patch('os.environ', _get_mock_credentials())
+    @mock.patch('os.environ', _get_mock_credentials(MOCK_USER_JSON_FILE))
     @mock.patch("auto_emailer.config.default._get_explicit_environ_credential_file",
                 return_value=None)
     @mock.patch("auto_emailer.config.default._get_explicit_environ_credentials",

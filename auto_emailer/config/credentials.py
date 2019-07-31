@@ -37,7 +37,7 @@ class Credentials:
             warnings.warn('If explicitly passing args to initialize Credentials, '
                           'please pass in `port` and `host` or use environment '
                           'variables for configuration {} and {}'.format(environment_vars.ENVIR_PORT,
-                                                                         environment_vars.ENVIR_HOST),
+                                                                         environment_vars.ENVIR_HOST)
                           )
 
     @property
@@ -82,10 +82,13 @@ class Credentials:
         :raises: ValueError
             If it cannot guess host from `emailer_sender`.
         """
-        if info['emailer_port'] is None:
+        if not info or not isinstance(info, dict):
+            return info
+
+        if (info['emailer_port'] is None) or (info['emailer_port'] is ""):
             info['emailer_port'] = 587
 
-        if info['emailer_host'] is None:
+        if (info['emailer_host'] is None) or (info['emailer_host'] is ""):
             if ('@outlook.com' in info['emailer_sender']) or ('@hotmail.com' in info['emailer_sender']):
                 info['emailer_host'] = 'smtp.office365.com'
             elif '@gmail.com' in info['emailer_sender']:
@@ -94,6 +97,7 @@ class Credentials:
                 info['emailer_host'] = 'smtp.mail.yahoo.com'
             else:
                 raise ValueError('Cannot guess host given email. Please explicitly set `emailer_host`.')
+
         return info
 
     @classmethod
@@ -139,6 +143,6 @@ class Credentials:
         with io.open(file_name, 'r', encoding='utf-8') as json_file:
             try:
                 data = json.load(json_file)
-            except ValueError as exc:
-                raise 'File {} is not a valid json file. {}'.format(file_name, exc)
+            except ValueError:
+                raise ValueError('File {} is not a valid json file.'.format(file_name))
             return cls.from_authorized_user_info(data)
