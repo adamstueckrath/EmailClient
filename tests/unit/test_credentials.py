@@ -5,7 +5,7 @@ from auto_emailer.config.credentials import Credentials
 
 DATA_DIR = Path(__file__).resolve().parents[1] / 'data'
 MOCK_USER_JSON_FILE = str(DATA_DIR / 'mock_envir_credentials.json')
-USER_CREDS_JSON_FILE = str(DATA_DIR / 'user_credentials.json')
+USER_CREDS_JSON_FILE = str(DATA_DIR / 'mock_user_credentials.json')
 MOCK_USER_CSV_FILE = str(DATA_DIR / 'mock_credentials.csv')
 
 

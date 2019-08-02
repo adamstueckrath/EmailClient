@@ -22,6 +22,7 @@ class Emailer:
             is called. Otherwise, a login attempt will be made
             at construction time.
         """
+
         if (config is not None and
                 not isinstance(config, credentials.Credentials)):
             raise ValueError('Emailer library only supports credentials from '
@@ -29,12 +30,14 @@ class Emailer:
                              'and auto_emailer.config.environment_vars '
                              'for help on authentication with this library.')
         elif config is None:
-            self._config = default_credentials()
-        elif isinstance(config, credentials.Credentials):
-            self._config = config
+            try:
+                self._config = default_credentials()
+            except EnvironmentError:
+                raise ValueError('Emailer library only supports credentials from '
+                                 '`auto_emailer.config`. Either define and pass explicitly '
+                                 'to Emailer() or set environment_vars ')
         else:
-            raise ValueError('Unknown credential configuration. Please '
-                             'consult the docs: ')
+            self._config = config
 
         self._logged_in = False
         if not delay_login:
@@ -51,6 +54,7 @@ class Emailer:
         """
         Quits the connection to the smtp server.
         """
+        self._logged_in = False
         self._smtp.quit()
 
     def _login(self):
