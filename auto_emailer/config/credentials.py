@@ -1,7 +1,6 @@
 import six
 import json
 import io
-import getpass
 import warnings
 from auto_emailer.config import environment_vars
 
@@ -38,7 +37,7 @@ class Credentials:
             warnings.warn('If explicitly passing args to initialize Credentials, '
                           'please pass in `port` and `host` or use environment '
                           'variables for configuration {} and {}'.format(environment_vars.ENVIR_PORT,
-                                                                         environment_vars.ENVIR_HOST),
+                                                                         environment_vars.ENVIR_HOST)
                           )
 
     @property
@@ -70,45 +69,6 @@ class Credentials:
         return self._host
 
     @staticmethod
-    def from_login(**kwargs):
-        """
-        NOT IN USE. FOR FUTURE VERSION.
-
-        Get prompted for login information at your command line.
-        All keyword args are passed to initialize Credentials().
-
-        :param kwargs: input from user
-            Initialize credentials object from input values
-        :return: class
-            config.credentials.Credentials: The constructed credentials.
-        """
-        # config = dict()
-        # config['sender_email'] = input('Email account to send from: ')
-        #
-        # if ('@outlook.com' in config['sender_email']) or ('@hotmail.com' in config['sender_email']):
-        #     port_message = 'Port # (likely 587): '
-        #     host_message = 'Host URL (likely smtp.office365.com): '
-        #
-        # elif '@gmail.com' in config['sender_email']:
-        #     port_message = 'Port # (likely 587): '
-        #     host_message = 'Host URL (likely smtp.gmail.com): '
-        #
-        # elif '@yahoo.com' in config['sender_email']:
-        #     port_message = 'Port # (likely 587): '
-        #     host_message = 'Host URL (likely smtp.mail.yahoo.com): '
-        #
-        # else:
-        #     port_message = 'Port #: '
-        #     host_message = 'Host URL: '
-        #
-        # config['port'] = int(input(port_message))
-        # config['host'] = input(host_message)
-        # config['password'] = getpass.getpass('Email password (nothing will be shown as you type): ')
-        #
-        # return Credentials(**kwargs)
-        return
-
-    @staticmethod
     def fill_missing_user_info(info):
         """
         If `emailer_port` or `emailer_host` is not set,
@@ -122,10 +82,13 @@ class Credentials:
         :raises: ValueError
             If it cannot guess host from `emailer_sender`.
         """
-        if info['emailer_port'] is None:
+        if not info or not isinstance(info, dict):
+            return info
+
+        if (info['emailer_port'] is None) or (info['emailer_port'] is ""):
             info['emailer_port'] = 587
 
-        if info['emailer_host'] is None:
+        if (info['emailer_host'] is None) or (info['emailer_host'] is ""):
             if ('@outlook.com' in info['emailer_sender']) or ('@hotmail.com' in info['emailer_sender']):
                 info['emailer_host'] = 'smtp.office365.com'
             elif '@gmail.com' in info['emailer_sender']:
@@ -134,6 +97,7 @@ class Credentials:
                 info['emailer_host'] = 'smtp.mail.yahoo.com'
             else:
                 raise ValueError('Cannot guess host given email. Please explicitly set `emailer_host`.')
+
         return info
 
     @classmethod
@@ -179,6 +143,6 @@ class Credentials:
         with io.open(file_name, 'r', encoding='utf-8') as json_file:
             try:
                 data = json.load(json_file)
-            except ValueError as exc:
-                raise 'File {} is not a valid json file. {}'.format(file_name, exc)
+            except ValueError:
+                raise ValueError('File {} is not a valid json file.'.format(file_name))
             return cls.from_authorized_user_info(data)

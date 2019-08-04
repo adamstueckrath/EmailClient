@@ -22,19 +22,22 @@ class Emailer:
             is called. Otherwise, a login attempt will be made
             at construction time.
         """
+
         if (config is not None and
                 not isinstance(config, credentials.Credentials)):
-            raise ValueError('Emailer library only supports credentials from '
+            raise ValueError('Emailer class only supports credentials from '
                              'auto_emailer.config See auto_emailer.config.credentials '
                              'and auto_emailer.config.environment_vars '
                              'for help on authentication with this library.')
         elif config is None:
-            self._config = default_credentials()
-        elif isinstance(config, credentials.Credentials):
-            self._config = config
+            try:
+                self._config = default_credentials()
+            except EnvironmentError:
+                raise ValueError('Emailer class only supports credentials from '
+                                 '`auto_emailer.config`. Either define and pass explicitly '
+                                 'to Emailer() or set environment_vars.')
         else:
-            raise ValueError('Unknown credential configuration. Please '
-                             'consult the docs: ')
+            self._config = config
 
         self._logged_in = False
         if not delay_login:
@@ -51,6 +54,7 @@ class Emailer:
         """
         Quits the connection to the smtp server.
         """
+        self._logged_in = False
         self._smtp.quit()
 
     def _login(self):
@@ -77,7 +81,7 @@ class Emailer:
         try:
             template_text = Path(template_path).read_text()
         except FileNotFoundError:
-            raise('File path not found: {}'.format(template_path))
+            raise FileNotFoundError('File path not found: {}'.format(template_path))
         return template_text
 
     def send_email(self, destinations, subject, text=None,
@@ -109,7 +113,7 @@ class Emailer:
         # check if email template is used
         if template_path:
             text = self.email_template(template_path)
-            text.format(**template_args)
+            text = text.format(**template_args)
 
         # attach text part of message
         message.attach(MIMEText(text))
