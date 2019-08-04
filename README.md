@@ -10,7 +10,7 @@ your computer every few minutes to check on the program’s status. Instead, you
 email when it’s done—freeing you to focus on more important things while you’re away from your computer.
 
 ## Setup
-If you want to use the emailing features of this script, then you can either pass in the parameters to sign into an 
+If you want to use the emailing features of this package, then you can either pass in the parameters to sign into an 
 email account inside the code, or you can set the environment variables "EMAIL_ADDRESS" AND "EMAIL_PASSWORD". In most 
 cases, these two environment variables will be enough, but if authentication is failing then you may need to further 
 create. 
@@ -36,16 +36,5 @@ Yahoo Mail | smtp.mail.yahoo.com
 ## Auto Emailer Example
 You can programmatically send an email with a dynamic body to each one of them. So instead of manually writing 
 thousands of emails, you just write a few lines of code and you’re good to go.
-The main use of this package is to integrate into your environment. The other use is to send a quick email via terminal.
-
-Integrated Example:
-
-
-
-Terminal Example: 
-```
-# very handy email object that by default will sign into EMAIL_ADDRESS
-email = Emailer()
-email.send_mail(['test.destination@gmail.com'], 'Subject', 'Message')
-```
+The main use of this package is to integrate into your environment. 
 

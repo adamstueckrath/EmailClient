@@ -5,12 +5,12 @@ from pathlib import Path
 from auto_emailer.config import default, credentials
 
 DATA_DIR = Path(__file__).resolve().parents[1] / 'data'
-MOCK_USER_JSON_FILE = str(DATA_DIR / 'mock_envir_credentials.json')
-MOCK_USER_CSV_FILE = str(DATA_DIR / 'mock_credentials.csv')
+MOCK_USER_JSON_FILE = DATA_DIR / 'mock_envir_credentials.json'
+MOCK_USER_CSV_FILE = DATA_DIR / 'mock_credentials.csv'
 
 
 def _get_mock_credentials(file):
-    with open(file, 'r') as creds:
+    with file.open() as creds:
         return json.load(creds)
 
 
