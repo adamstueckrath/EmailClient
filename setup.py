@@ -8,6 +8,6 @@ setup(name='auto_emailer',
       url='',
       packages=['auto_emailer'],
       install_requires=['six>=1.9.0'],
-      tests_require=[],
+      tests_require=['six>=1.9.0'],
       package_data={}
       )

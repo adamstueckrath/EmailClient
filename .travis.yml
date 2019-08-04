@@ -1,13 +1,14 @@
 dist: xenial   # required for Python >= 3.7
 language: python
-
+os:
+  - linux
 python:
+  - "3.6"
   - "3.6.5"
   - "3.7.0"
-
-# command to install dependencies
+install: # command to install dependencies
+- pip install -r requirements.txt
 script: python -m unittest discover -s tests
-
 branches:
   only:
     - master
