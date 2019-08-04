@@ -5,6 +5,8 @@ os:
   - osx
   - windows
 python:
+  - "3.5"
+  - "3.6.0"
   - "3.6.5"
   - "3.7.0"
 install: # command to install dependencies

@@ -1,6 +1,8 @@
 Auto Emailer
 ---
 [![Build Status](https://travis-ci.org/adamstueckrath/AutoEmailer.svg?branch=master)](https://travis-ci.org/adamstueckrath/AutoEmailer)
+[![GitHub](https://img.shields.io/github/license/adamstueckrath/AutoEmailer)](https://github.com/adamstueckrath/AutoEmailer/blob/master/LICENSE.txt)
+[![Maintenance](https://img.shields.io/maintenance/yes/2019)](https://github.com/adamstueckrath/AutoEmailer/graphs/commit-activity)
 
 A wrapper library around python's SMTP (Simple Mail Transfer Protocol) library for making emails easier.
 
