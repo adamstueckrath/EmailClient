@@ -1,28 +1,28 @@
 import os
 import datetime
 import smtplib
-from .config import credentials, default_credentials
 from pathlib import Path
+
 from email.mime.base import MIMEBase
 from email.mime.text import MIMEText
 from email.encoders import encode_base64
 from email.mime.multipart import MIMEMultipart
 
+from .config import credentials
+from .config import default_credentials
+
 
 class Emailer:
-    """
-    Welcome to the Auto Emailer to send all of your emails!
-    """
+    """Welcome to the Auto Emailer to send all of your emails!"""
     def __init__(self, config=None, delay_login=True):
         """
-        :param config: class
-            config.credentials.Credentials: The constructed credentials.
-        :param delay_login: bool
-            if True, no login attempt will be made until send_mail
-            is called. Otherwise, a login attempt will be made
-            at construction time.
+        Args:
+            config (Optional(config.credentials.Credentials)): The constructed credentials.
+                Can be None if environment variables are configured.
+            delay_login (bool): If True, no login attempt will be made
+                until send_mail is called. Otherwise, a login attempt will be made
+                at class initialization.
         """
-
         if (config is not None and
                 not isinstance(config, credentials.Credentials)):
             raise ValueError('Emailer class only supports credentials from '
@@ -46,21 +46,18 @@ class Emailer:
     @property
     def logged_in(self):
         """
-        :return: bool if user is logged in or not.
+        Returns:
+            bool: If SMTP client is logged in or not.
         """
         return self._logged_in
 
     def _logout(self):
-        """
-        Quits the connection to the smtp server.
-        """
+        """Quits the connection to the smtp client."""
         self._logged_in = False
         self._smtp.quit()
 
     def _login(self):
-        """
-        Uses the class property config to login.
-        """
+        """Uses the class attribute Emailer._config to connect to SMTP client."""
         self._smtp = smtplib.SMTP(host=self._config.host, port=self._config.port, timeout=10)
         self._smtp.starttls()
         self._smtp.login(self._config.sender_email, self._config.password)
@@ -68,15 +65,16 @@ class Emailer:
 
     @staticmethod
     def email_template(template_path):
-        """
-        Opens, reads, and returns the given template file path as a string.
+        """Opens, reads, and returns the given template file path as a string.
 
-        :param template_path: str
-            File path for the email template.
-        :raises: FileNotFoundError
-            If it cannot find the file from given `template_path`.
-        :return: str
-            Text of template file.
+        Args:
+            template_path (str): File path for the email template.
+
+        Returns:
+            str: Text of file.
+
+        Raises:
+            FileNotFoundError: If cannot find the file from given `template_path`.
         """
         try:
             template_text = Path(template_path).read_text()
@@ -86,22 +84,20 @@ class Emailer:
 
     def send_email(self, destinations, subject, text=None,
                    template_path=None, template_args=None, attach_files=None):
-        """
-        Send an email to given destination list. The email will auto fill
-        the FROM with config.sender_email.
+        """Send an email to given destination list. The email will auto fill
+        the FROM with `Email._config.sender_email` and quit after email is sent.
 
-        :param destinations: list
-            List of strings of email addresses to send the email to.
-        :param subject: str
-            Subject of your email.
-        :param text: str
-            The body text of your email.
-        :param template_path: str
-            File path of an email template text to use for the email body.
-        :param template_args: dict
-            Keyword arguments to format the email template text.
-        :param attach_files: list
-            List of file paths to attached to email.
+        Args:
+            destinations (Sequence[str]): List of strings of email
+                addresses to send the email to.
+            subject (str): Subject of your email.
+            text (Optional[str]): The body text of your email.
+            template_path (Optional[str]): File path of an email template
+                text to use for the email body.
+            template_args (Optional[dict]): Keyword arguments to format
+                the email template text.
+            attach_files (Sequence[str]): List of string file paths
+                to attached to email.
         """
         # create multi-part message for text and attachments
         message = MIMEMultipart()
