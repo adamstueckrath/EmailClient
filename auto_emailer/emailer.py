@@ -70,11 +70,11 @@ class Emailer:
         Args:
             template_path (str): File path for the email template.
 
-        Raises:
-            FileNotFoundError: If cannot find the file from given `template_path`.
-
         Returns:
             str: Text of file.
+
+        Raises:
+            FileNotFoundError: If cannot find the file from given `template_path`.
         """
         try:
             template_text = Path(template_path).read_text()
