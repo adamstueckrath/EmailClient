@@ -1,32 +1,33 @@
-import six
-import json
 import io
+import json
 import warnings
+
+import six
+
 from auto_emailer.config import environment_vars
 
 
 class Credentials:
-    """
-    Configure credentials to the Auto Emailer.
-    """
+    """Base class for Auto Emailer credentials."""
 
     def __init__(self, sender_email=None, password=None,
                  port=None, host=None):
         """
-        :param sender_email: str
-            The user name to authenticate with.
-            Equivalent environment variable: emailer_address.
-        :param password: str
-            The password for the authentication.
-            Equivalent environment variable: emailer_password
-        :param port: int
-            Port number, equivalent environment variable: emailer_port.
-            If neither config nor environment variable is set,
-            then it will default to 587.
-        :param host: str
-            Domain name of host, equivalent environment variable: emailer_host.
-            If neither config nor environment variable is set,
-            then we attempt to guess the host from the emailer_address.
+        Args:
+            sender_email (Optional(str)): The user name to authenticate SMTP client.
+                Can be None if environment variables are configured. Equivalent environment
+                variable: `emailer_address`.
+            password (Optional(str)): The password to authenticate SMTP client.
+                Can be None if environment variables are configured. Equivalent environment
+                variable: `emailer_password`.
+            port (Optional(int)): The port number of SMTP server. Equivalent environment
+                variable: `emailer_port`. If neither config nor environment variable are set,
+                then it will default to 587.
+            host (Optional(str)): Host name of SMTP server. Equivalent environment
+                variable: `emailer_host`. If neither config nor environment variable are set,
+                then it will attempt to guess the host from the `emailer_address`.
+
+        Warnings: Raises warning if port or host are none.
         """
         self._sender_email = sender_email
         self._password = password
@@ -36,51 +37,57 @@ class Credentials:
             warnings.simplefilter("always")
             warnings.warn('If explicitly passing args to initialize Credentials, '
                           'please pass in `port` and `host` or use environment '
-                          'variables for configuration {} and {}'.format(environment_vars.ENVIR_PORT,
-                                                                         environment_vars.ENVIR_HOST)
+                          'variables for configuration {} and {}'
+                          .format(environment_vars.ENVIR_PORT,
+                                  environment_vars.ENVIR_HOST)
                           )
 
     @property
     def sender_email(self):
         """
-        :return: sender (username) email address.
+        Returns:
+            str: User name for SMTP client.
         """
         return self._sender_email
 
     @property
     def password(self):
         """
-        :return: sender (user) email password.
+        Returns:
+            str: Password for SMTP client.
         """
         return self._password
 
     @property
     def port(self):
         """
-        :return: port where SMTP server is listening.
+        Returns:
+            str: Port where SMTP server is listening.
         """
         return self._port
 
     @property
     def host(self):
         """"
-        :return: SMTP server host name.
+        Returns:
+            str: SMTP server host name.
         """
         return self._host
 
     @staticmethod
     def fill_missing_user_info(info):
-        """
-        If `emailer_port` or `emailer_host` is not set,
-        sets the default port to 587 and attempts to guess the host
-        from the `emailer_sender`.
+        """Fills in automatically assigns `emailer_port` or `emailer_host` if they not set.
+        sets the default port to 587 and attempts to guess the host from the `emailer_sender`.
 
-        :param info: dict
-            The authorized user info in auto_emailer format.
-        :return: dict
-            Constructed user credentials.
-        :raises: ValueError
-            If it cannot guess host from `emailer_sender`.
+        Args:
+            info (dict): Config dictionary object in auto_emailer format for initializing
+                `auto_emailer.config.credentials.Credentials` class instance.
+
+        Returns:
+            dict: Dictionary object with missing information filled.
+
+        Raises:
+            ValueError: If it cannot guess `emailer_host` from `emailer_sender`.
         """
         if not info or not isinstance(info, dict):
             return info
@@ -102,15 +109,18 @@ class Credentials:
 
     @classmethod
     def from_authorized_user_info(cls, info):
-        """
-        Creates a Credentials instance from parsed authorized user info.
+        """Creates a Credentials instance from parsed authorized user info.
 
-        :param info: dict
-            The authorized user info in auto_emailer format.
-        :return: class
-            config.credentials.Credentials: The constructed credentials.
-        :raises: ValueError
-            If the info is not in the expected format.
+        Args:
+            info (dict): Config dictionary object in auto_emailer format for initializing 
+                `auto_emailer.config.credentials.Credentials` class instance. 
+
+        Returns:
+            auto_emailer.config.credentials.Credentials: The constructed credentials created from
+            user configuration object.
+
+        Raises:
+            ValueError: If the authorized user info is not in the expected format (missing keys).
         """
         keys_needed = {'emailer_sender', 'emailer_password', 'emailer_port', 'emailer_host'}
         missing = keys_needed.difference(six.iterkeys(info))
@@ -130,15 +140,17 @@ class Credentials:
 
     @classmethod
     def from_authorized_user_file(cls, file_name):
-        """
-        Creates a Credentials instance from an authorized user json file.
+        """Creates a Credentials instance from an authorized user json file.
 
-        :param file_name: str
-            The path to the authorized user json file.
-        :return: class
-            config.credentials.Credentials: The constructed credentials.
-        :raises: ValueError
-            If the file is not in the expected format.
+        Args:
+            file_name (str): The string path to the authorized user json file
+
+        Returns:
+            auto_emailer.config.credentials.Credentials: The constructed credentials created from
+            user file attributes.
+
+        Raises:
+            ValueError: If the authorized user file is not in the expected format (json).
         """
         with io.open(file_name, 'r', encoding='utf-8') as json_file:
             try:
