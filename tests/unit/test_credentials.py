@@ -1,6 +1,7 @@
 import json
 import unittest
 from pathlib import Path
+
 from auto_emailer.config import credentials
 
 DATA_DIR = Path(__file__).resolve().parents[1] / 'data'
@@ -17,8 +18,7 @@ def _get_mock_credentials(file):
 class TestCredentials(unittest.TestCase):
 
     def test_credentials_warning(self):
-        """
-        Test credentials.Credentials raise warning
+        """Test credentials.Credentials raise warning
         if explicitly passing args to initialize Credentials, '
         and `port` or `host` are not set.'
         """
@@ -26,11 +26,9 @@ class TestCredentials(unittest.TestCase):
             credentials.Credentials()
 
     def test_credentials_properties(self):
-        """
-        Test initializing an instance of credentials.Credentials,
-        and validates explicitly passing args class object.
-
-        Also test each class property call.
+        """Test initializing an instance of credentials.Credentials,
+        and validates explicitly passing args class object.Also test
+        each class property call.
         """
         data = _get_mock_credentials(USER_USER_JSON_FILE)
         creds = credentials.Credentials(**data)
@@ -40,8 +38,7 @@ class TestCredentials(unittest.TestCase):
         self.assertEqual(creds.port, 587)
 
     def test_credentials_fill_missing_user_error(self):
-        """
-        Test credentials.Credentials.fill_missing_user_info()
+        """Test credentials.Credentials.fill_missing_user_info()
         raise ValueError if given missing data and unknown email address.
         """
         data = {"emailer_sender": "test@gmailsssssssss.com",
@@ -53,16 +50,14 @@ class TestCredentials(unittest.TestCase):
             credentials.Credentials.fill_missing_user_info(data)
 
     def test_credentials_fill_missing_user_info_empty(self):
-        """
-        Test credentials.Credentials.fill_missing_user_info()
+        """Test credentials.Credentials.fill_missing_user_info()
         returns argument if data is not a data type: dictionary
         or is None.
         """
         self.assertEqual(credentials.Credentials.fill_missing_user_info({}), {})
 
     def test_credentials_fill_missing_user_info(self):
-        """
-        Test credentials.Credentials.fill_missing_user_info()
+        """Test credentials.Credentials.fill_missing_user_info()
         returns expected values if passed missing `host` or `port`.
         """
         data = {"emailer_sender": "test@gmail.com",
@@ -75,16 +70,14 @@ class TestCredentials(unittest.TestCase):
         self.assertEqual(creds['emailer_host'], 'smtp.gmail.com')
 
     def test_credentials_from_authorized_user_info_error(self):
-        """
-        Test class method: credentials.Credentials.from_authorized_user_info()
+        """Test class method: credentials.Credentials.from_authorized_user_info()
         raises ValueError if dict argument is None or missing expected keys.
         """
         with self.assertRaises(ValueError):
             credentials.Credentials.from_authorized_user_info({})
 
     def test_credentials_from_authorized_user_info_filled_info(self):
-        """
-        Test class method: credentials.Credentials.from_authorized_user_info()
+        """Test class method: credentials.Credentials.from_authorized_user_info()
         calls credentials.Credentials.fill_missing_user_info() to fill missing values
         and initializes credentials.Credentials instance with expected values.
         """
@@ -99,8 +92,7 @@ class TestCredentials(unittest.TestCase):
         self.assertEqual(creds.port, 587)
 
     def test_credentials_from_authorized_user_info(self):
-        """
-        Test class method: credentials.Credentials.from_authorized_user_info()
+        """Test class method: credentials.Credentials.from_authorized_user_info()
         initializes credentials.Credentials instance with expected values.
         """
         data = _get_mock_credentials(MOCK_ENVIR_JSON_FILE)
@@ -112,16 +104,14 @@ class TestCredentials(unittest.TestCase):
         self.assertEqual(creds.port, 587)
 
     def test_credentials_from_authorized_user_file_error(self):
-        """
-        Test class object: credentials.Credentials.from_authorized_user_info()
+        """Test class object: credentials.Credentials.from_authorized_user_info()
         raises ValueError if file format is not json.
         """
         with self.assertRaises(ValueError):
             credentials.Credentials.from_authorized_user_file(MOCK_USER_CSV_FILE)
 
     def test_credentials_from_authorized_user_file(self):
-        """
-        Test class method: credentials.Credentials.from_authorized_user_file()
+        """Test class method: credentials.Credentials.from_authorized_user_file()
         opens json file into python data type dict and then calls
         credentials.Credentials.from_authorized_user_info() to
         initialize credentials.Credentials instance with expected values.
