@@ -17,25 +17,28 @@ class Emailer:
     def __init__(self, config=None, delay_login=True):
         """
         Args:
-            config (Optional(config.credentials.Credentials)): The constructed credentials.
-                Can be None if environment variables are configured.
-            delay_login (bool): If True, no login attempt will be made
-                until send_mail is called. Otherwise, a login attempt will be made
-                at class initialization.
+            config (Optional(config.credentials.Credentials)): The constructed
+                credentials. Can be None if environment variables are
+                configured.
+            delay_login (bool): If True, no login attempt will be made until
+                send_mail is called. Otherwise, a login attempt will be made at
+                class initialization.
         """
         if (config is not None and
                 not isinstance(config, credentials.Credentials)):
             raise ValueError('Emailer class only supports credentials from '
-                             'auto_emailer.config See auto_emailer.config.credentials '
-                             'and auto_emailer.config.environment_vars '
-                             'for help on authentication with this library.')
+                             'auto_emailer.config. See '
+                             'auto_emailer.config.credentials and '
+                             'auto_emailer.config.environment_vars for help on '
+                             'authentication with auto-emailer library.')
         elif config is None:
             try:
                 self._config = default_credentials()
             except EnvironmentError:
                 raise ValueError('Emailer class only supports credentials from '
-                                 '`auto_emailer.config`. Either define and pass explicitly '
-                                 'to Emailer() or set environment_vars.')
+                                 'auto_emailer.config. Either define and pass '
+                                 'explicitly to Emailer() or set '
+                                 'environment_vars.')
         else:
             self._config = config
 
@@ -45,8 +48,7 @@ class Emailer:
 
     @property
     def logged_in(self):
-        """
-        Returns:
+        """Returns:
             bool: If SMTP client is logged in or not.
         """
         return self._logged_in
@@ -57,8 +59,12 @@ class Emailer:
         self._smtp.quit()
 
     def _login(self):
-        """Uses the class attribute Emailer._config to connect to SMTP client."""
-        self._smtp = smtplib.SMTP(host=self._config.host, port=self._config.port, timeout=10)
+        """Uses the class attribute Emailer._config to connect
+        to SMTP client.
+        """
+        self._smtp = smtplib.SMTP(host=self._config.host,
+                                  port=self._config.port,
+                                  timeout=10)
         self._smtp.starttls()
         self._smtp.login(self._config.sender_email, self._config.password)
         self._logged_in = True
@@ -74,12 +80,14 @@ class Emailer:
             str: Text of file.
 
         Raises:
-            FileNotFoundError: If cannot find the file from given `template_path`.
+            FileNotFoundError: If cannot find the file from given
+                `template_path`.
         """
         try:
             template_text = Path(template_path).read_text()
         except FileNotFoundError:
-            raise FileNotFoundError('File path not found: {}'.format(template_path))
+            raise FileNotFoundError('File path not found: {}'
+                                    .format(template_path))
         return template_text
 
     def send_email(self, destinations, subject, text=None,
@@ -128,11 +136,16 @@ class Emailer:
         if not self._logged_in:
             self._login()
 
-        # handle disconnect and connection errors by quick login and attempt to send again
+        # handle disconnect and connection errors by
+        # quick login and attempt to send again
         try:
-            self._smtp.sendmail(self._config.sender_email, destinations, message.as_string())
+            self._smtp.sendmail(self._config.sender_email,
+                                destinations,
+                                message.as_string())
         except smtplib.SMTPConnectError:
             self._login()
-            self._smtp.sendmail(self._config.sender_email, destinations, message.as_string())
+            self._smtp.sendmail(self._config.sender_email,
+                                destinations,
+                                message.as_string())
         finally:
             self._logout()

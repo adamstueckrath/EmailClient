@@ -6,15 +6,17 @@ from auto_emailer.config.credentials import Credentials
 
 def _get_explicit_environ_credential_file():
     """Gets file path from
-    `auto_emailer.config.environment_vars.emailer_credentials` environment variable.
-    If file is found, it will load the json file variables and return class.
+    `auto_emailer.config.environment_vars.emailer_credentials` environment
+    variable. If file is found, it will load the json file variables and
+    return class.
 
     Creates and returns a :class:`auto_emailer.config.credentials.Credentials`
     instance from the environment variable json file attributes.
 
     Returns:
-        auto_emailer.config.credentials.Credentials: The constructed credentials created from
-        the environment variable's :func:`auto_emailer.config.environment_vars.CREDENTIALS_ENVIR_PATH`
+        auto_emailer.config.credentials.Credentials: The constructed
+        credentials created from the environment variable's
+        :func:`auto_emailer.config.environment_vars.CREDENTIALS_ENVIR_PATH`
         file attributes or `None`.
     """
     explicit_file = os.environ.get(environment_vars.CREDENTIALS_ENVIR_PATH)
@@ -34,12 +36,14 @@ def _get_explicit_environ_credentials():
     instance from the environment variables.
 
     Returns:
-        auto_emailer.config.credentials.Credentials: The constructed credentials created from
-        the environment variables defined in :func:`auto_emailer.config.environment_vars`
+        auto_emailer.config.credentials.Credentials: The constructed
+        credentials created from the environment variables defined in
+        :func:`auto_emailer.config.environment_vars`
 
     Raises:
         EnvironmentError: If environment variable credentials are defined and
-            set to None. Specifically checks, `emailer_password` and `emailer_sender`.
+            set to None. Specifically checks, `emailer_password` and
+            `emailer_sender`.
     """
     #  check if there are ANY environment variables set
     if not any(env_vars.startswith('emailer') for env_vars in os.environ.keys()):
@@ -47,36 +51,45 @@ def _get_explicit_environ_credentials():
 
     # build environment variables into dict
     info = dict()
-    info[environment_vars.ENVIR_SENDER] = os.environ.get(environment_vars.ENVIR_SENDER)
-    info[environment_vars.ENVIR_PASSWORD] = os.environ.get(environment_vars.ENVIR_PASSWORD)
-    info[environment_vars.ENVIR_HOST] = os.environ.get(environment_vars.ENVIR_HOST)
-    info[environment_vars.ENVIR_PORT] = os.environ.get(environment_vars.ENVIR_PORT)
+    info[environment_vars.ENVIR_SENDER] = os.environ.get(
+                                            environment_vars.ENVIR_SENDER)
+    info[environment_vars.ENVIR_PASSWORD] = os.environ.get(
+                                            environment_vars.ENVIR_PASSWORD)
+    info[environment_vars.ENVIR_HOST] = os.environ.get(
+                                            environment_vars.ENVIR_HOST)
+    info[environment_vars.ENVIR_PORT] = os.environ.get(
+                                            environment_vars.ENVIR_PORT)
 
-    # if no values are found for emailer_sender or emailer_password, raise error
+    # if no values are found for emailer_sender or
+    # emailer_password, raise error
     if (info[environment_vars.ENVIR_SENDER] is None or
             info[environment_vars.ENVIR_PASSWORD] is None):
         raise EnvironmentError('The environment credentials do not contain the '
-                               'necessary fields need to authenticate. You must '
-                               'specify emailer_sender and emailer_password.')
+                               'necessary fields need to authenticate. You '
+                               'must specify emailer_sender and '
+                               'emailer_password.')
 
     credentials = Credentials.from_authorized_user_info(info)
     return credentials
 
 
 def default_credentials():
-    """Gets the default credentials for the current environment. Default credentials
-    provides an easy way to obtain credentials to call `auto_emailer.Emailer`.
+    """Gets the default credentials for the current environment.
+    Default credentials provides an easy way to obtain credentials to call
+    `auto_emailer.Emailer`.
 
     This function acquires credentials from the environment in the following
     order:
 
-    1. If the environment variable `auto_emailer.config.environment_vars.emailer_sender` is
-        set to the path of a valid JSON file, then it is loaded and returned.
-    2. If explicit environment variables are set `emailer_`, then the credentials
-       are loaded and returned.
+    1. If the environment variable
+       `auto_emailer.config.environment_vars.emailer_sender` is set to the
+       path of a valid JSON file, then it is loaded and returned.
+    2. If explicit environment variables are set `emailer_`, then the
+       credentials are loaded and returned.
 
     Returns:
-        auto_emailer.config.credentials.Credentials: The constructed credentials.
+        auto_emailer.config.credentials.Credentials: The constructed
+        credentials.
 
     Raises:
         EnvironmentError: If no credentials were found, or if the credentials
@@ -94,8 +107,9 @@ def default_credentials():
             return credentials
 
     raise EnvironmentError('Could not automatically determine credentials. '
-                           'Please set {env} file path or explicitly set environment '
-                           'credentials variables and re-run the application. For more '
-                           'information, please see auto_emailer.config.environment_vars.'
+                           'Please set {env} file path or explicitly set '
+                           'environment credentials variables and re-run the '
+                           'application. For more information, please see '
+                           'auto_emailer.config.environment_vars.'
                            .format(env=environment_vars.CREDENTIALS_ENVIR_PATH)
                            )
