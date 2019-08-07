@@ -13,7 +13,7 @@ from .config import default_credentials
 
 
 class Emailer:
-    """Welcome to the Auto Emailer to send all of your emails!"""
+    """Welcome to the auto-emailer to send all of your emails!"""
     def __init__(self, config=None, delay_login=True):
         """
         Args:
@@ -93,7 +93,8 @@ class Emailer:
     def send_email(self, destinations, subject, text=None,
                    template_path=None, template_args=None, attach_files=None):
         """Send an email to given destination list. The email will auto fill
-        the FROM with `Email._config.sender_email` and quit after email is sent.
+        the FROM with `Email._config.EMAILER_SENDER` and quit after email
+        is sent.
 
         Args:
             destinations (Sequence[str]): List of strings of email

@@ -60,8 +60,8 @@ will be enough, but if authentication is failing then you may need to
 further specify the environment variables ``EMAILER_HOST`` and
 ``EMAILER_PORT``.
 
-For more advance configurations, please see the configuration docs
-[PLACEHOLDER FOR LINK]. Once again, you can avoid environment variables
+For more advance configurations, please see the user guide.
+Once again, you can avoid environment variables
 and pass the appropriate credentials in inside your code.
 
 Docs
@@ -91,9 +91,9 @@ License
 
 `MIT <https://github.com/adamstueckrath/auto-emailer/blob/master/LICENSE.txt>`__ © Adam Stueckrath
 
-.. |Build Status| image:: https://travis-ci.org/adamstueckrath/AutoEmailer.svg?branch=master
+.. |Build Status| image:: https://travis-ci.org/adamstueckrath/auto-emailer.svg?branch=master
    :target: https://travis-ci.org/adamstueckrath/auto-emailer
-.. |GitHub| image:: https://img.shields.io/github/license/adamstueckrath/AutoEmailer
+.. |GitHub| image:: https://img.shields.io/github/license/adamstueckrath/auto-emailer
    :target: https://github.com/adamstueckrath/auto-emailer/blob/master/LICENSE.txt
 .. |Maintenance| image:: https://img.shields.io/maintenance/yes/2019
    :target: https://github.com/adamstueckrath/auto-emailer/graphs/commit-activity
