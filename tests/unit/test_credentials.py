@@ -41,10 +41,10 @@ class TestCredentials(unittest.TestCase):
         """Test credentials.Credentials.fill_missing_user_info()
         raise ValueError if given missing data and unknown email address.
         """
-        data = {"emailer_sender": "test@gmailsssssssss.com",
-                "emailer_password": "mypassword",
-                "emailer_host": "",
-                "emailer_port": ""
+        data = {"EMAILER_SENDER": "test@gmailsssssssss.com",
+                "EMAILER_PASSWORD": "mypassword",
+                "EMAILER_HOST": "",
+                "EMAILER_PORT": ""
                 }
         with self.assertRaises(ValueError):
             credentials.Credentials.fill_missing_user_info(data)
@@ -60,14 +60,14 @@ class TestCredentials(unittest.TestCase):
         """Test credentials.Credentials.fill_missing_user_info()
         returns expected values if passed missing `host` or `port`.
         """
-        data = {"emailer_sender": "test@gmail.com",
-                "emailer_password": "mypassword",
-                "emailer_host": "",
-                "emailer_port": ""
+        data = {"EMAILER_SENDER": "test@gmail.com",
+                "EMAILER_PASSWORD": "mypassword",
+                "EMAILER_HOST": "",
+                "EMAILER_PORT": ""
                 }
         creds = credentials.Credentials.fill_missing_user_info(data)
-        self.assertEqual(creds['emailer_port'], 587)
-        self.assertEqual(creds['emailer_host'], 'smtp.gmail.com')
+        self.assertEqual(creds['EMAILER_PORT'], 587)
+        self.assertEqual(creds['EMAILER_HOST'], 'smtp.gmail.com')
 
     def test_credentials_from_authorized_user_info_error(self):
         """Test class method: credentials.Credentials.from_authorized_user_info()
@@ -81,10 +81,10 @@ class TestCredentials(unittest.TestCase):
         calls credentials.Credentials.fill_missing_user_info() to fill missing values
         and initializes credentials.Credentials instance with expected values.
         """
-        data = {"emailer_sender": "test@gmail.com",
-                "emailer_password": "mypassword",
-                "emailer_host": "",
-                "emailer_port": ""
+        data = {"EMAILER_SENDER": "test@gmail.com",
+                "EMAILER_PASSWORD": "mypassword",
+                "EMAILER_HOST": "",
+                "EMAILER_PORT": ""
                 }
         creds = credentials.Credentials.from_authorized_user_info(data)
         self.assertIsInstance(creds, credentials.Credentials)
