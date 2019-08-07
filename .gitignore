@@ -1,4 +1,7 @@
-# User-specific stuff:
+# Build artifacts
 *.idea/
 *.python-version
 *__pycache__
+
+# Documentation-related
+docs/_build

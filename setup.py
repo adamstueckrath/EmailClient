@@ -2,7 +2,7 @@ from setuptools import setup
 
 setup(name='auto_emailer',
       version='0.0.1',
-      description='Email client to automate emails.',
+      description='auto-emailer Library for Python',
       author='Adam Stueckrath',
       author_email='stueckrath.adam@gmail.com',
       url='',
