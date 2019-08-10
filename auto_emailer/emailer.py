@@ -1,11 +1,12 @@
 import os
 import datetime
+
 import smtplib
 from pathlib import Path
 
+from email import encoders
 from email.mime.base import MIMEBase
 from email.mime.text import MIMEText
-from email.encoders import encode_base64
 from email.mime.multipart import MIMEMultipart
 
 from .config import credentials
@@ -42,32 +43,38 @@ class Emailer:
         else:
             self._config = config
 
-        self._logged_in = False
+        self._connected = False
         if not delay_login:
             self._login()
 
     @property
-    def logged_in(self):
+    def connected(self):
         """Returns:
             bool: If SMTP client is logged in or not.
         """
-        return self._logged_in
+        return self._connected
 
     def _logout(self):
         """Quits the connection to the smtp client."""
-        self._logged_in = False
-        self._smtp.quit()
+        if self.connected:
+            try:
+                self._smtp.quit()
+            except smtplib.SMTPServerDisconnected:
+                pass
+        self._connected = False
 
     def _login(self):
         """Uses the class attribute Emailer._config to connect
         to SMTP client.
         """
         self._smtp = smtplib.SMTP(host=self._config.host,
-                                  port=self._config.port,
-                                  timeout=10)
+                                  port=self._config.port)
+        # send 'hello' to SMTP server
+        self._smtp.ehlo()
+        # start TLS encryption
         self._smtp.starttls()
         self._smtp.login(self._config.sender_email, self._config.password)
-        self._logged_in = True
+        self._connected = True
 
     @staticmethod
     def email_template(template_path):
@@ -128,13 +135,16 @@ class Emailer:
             part = MIMEBase('application', "octet-stream")
             with open(path, 'rb') as file:
                 part.set_payload(file.read())
-            encode_base64(part)
+
+            # encode file in ASCII characters to send by email
+            encoders.encode_base64(part)
+            # add header as to attachment part
             part.add_header('Content-Disposition',
                             'attachment', filename=os.path.basename(path))
             message.attach(part)
 
         # log in to email client if not already.
-        if not self._logged_in:
+        if not self._connected:
             self._login()
 
         # handle disconnect and connection errors by
@@ -143,7 +153,7 @@ class Emailer:
             self._smtp.sendmail(self._config.sender_email,
                                 destinations,
                                 message.as_string())
-        except smtplib.SMTPConnectError:
+        except (smtplib.SMTPConnectError, smtplib.SMTPServerDisconnected):
             self._login()
             self._smtp.sendmail(self._config.sender_email,
                                 destinations,

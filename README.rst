@@ -1,12 +1,12 @@
 auto-emailer
-==========================
+============
 
 |Build Status| |GitHub| |Maintenance|
 
-A wrapper library around python's SMTP (Simple Mail Transfer Protocol) library
-for making emails easier. Python makes sending email relatively easy via the
-smtplib module, but this library makes it even *easier* with auto-configuration
-and email templates.
+A wrapper library around python's SMTP (Simple Mail Transfer Protocol) and email
+libraries for making emails easier. Python makes sending email relatively easy
+via the smtplib module, but this library makes it even *easier* with
+auto-configuration and email templates.
 
 Table of Contents
 -----------------
@@ -20,7 +20,7 @@ Table of Contents
 7.  `License <#license>`__
 
 Background
-------------
+----------
 
 Let's say you’re automating a task that takes a couple of hours to do,
 and you don’t want to go back to your computer every few minutes to
@@ -34,7 +34,7 @@ thousands, of emails, you just write a few lines of code to auto-mate
 the process and you're done.
 
 Installing
-------------
+----------
 
 You can install using `pip`_::
 
@@ -50,24 +50,22 @@ Supported Python Versions
 Python >= 3.6
 
 Usage
-------------
+-----
 
 If you want to use the emailing features of this library, then you can
-either explicitly pass arguments to ``Credentials`` to authenticate your
+either explicitly pass arguments to
+``auto_emailer.config.crendentials.Credentials`` to authenticate your
 SMTP client or you can set the environment variables ``EMAILER_SENDER``
 *AND* ``EMAIL_PASSWORD``. In most cases, these two environment variables
 will be enough, but if authentication is failing then you may need to
-further specify the environment variables ``EMAILER_HOST`` and
-``EMAILER_PORT``.
+further specify the environment variables ``EMAILER_HOST`` and ``EMAILER_PORT``.
 
-For more advance configurations, please see the user guide.
-Once again, you can avoid environment variables
-and pass the appropriate credentials in inside your code.
+For more advance configurations, please see the user guide and quick start guide.
 
 Docs
-------------
+----
 
-auto-emailer Python Library has usage and reference documentation at
+auto-emailer python library has usage and reference documentation at
 `auto-emailer.readthedocs.io <https://auto-emailer.readthedocs.io>`_.
 
 Maintainers

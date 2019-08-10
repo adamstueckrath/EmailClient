@@ -5,3 +5,6 @@
 
 # Documentation-related
 docs/_build
+
+# os related
+.DS_Store

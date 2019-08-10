@@ -53,13 +53,13 @@ class TestEmailer(unittest.TestCase):
         mock_default.return_value = self._make_credentials()
         test_emailer = Emailer()
         self.assertIsInstance(test_emailer, Emailer)
-        self.assertFalse(test_emailer.logged_in)
+        self.assertFalse(test_emailer.connected)
         self.assertEqual(mock_default.call_count, 1)
 
     @mock.patch('auto_emailer.emailer.smtplib.SMTP')
     def test_emailer_login(self, mock_smtplib):
         """Test class method: Emailer._login() authenticates SMTP client
-        with passed credentials and validates with Emailer.logged_in().
+        with passed credentials and validates with Emailer.connected().
         """
         creds = self._make_credentials()
         test_emailer = Emailer(config=creds, delay_login=True)
@@ -67,17 +67,17 @@ class TestEmailer(unittest.TestCase):
         test_emailer._login()
         mock_smtplib.return_value.login.assert_called_once_with(creds.sender_email,
                                                                 creds.password)
-        self.assertTrue(test_emailer.logged_in)
+        self.assertTrue(test_emailer.connected)
 
     @mock.patch('auto_emailer.emailer.smtplib.SMTP')
-    def test_emailer_logged_in(self, mock_smtplib):
+    def test_emailer_connected(self, mock_smtplib):
         """Test class method: Emailer._login() authenticates SMTP client
         with passed credentials and validates Emailer class
-        property logged_in.
+        property connected.
         """
         test_emailer = Emailer(config=self._make_credentials(), delay_login=False)
         self.assertIsInstance(test_emailer, Emailer)
-        self.assertTrue(test_emailer.logged_in)
+        self.assertTrue(test_emailer.connected)
         self.assertEqual(mock_smtplib.call_count, 1)
 
     @mock.patch('auto_emailer.emailer.smtplib.SMTP')
@@ -90,9 +90,9 @@ class TestEmailer(unittest.TestCase):
         instance = mock_smtplib.return_value
         test_emailer = Emailer(config=self._make_credentials(), delay_login=False)
         self.assertIsInstance(test_emailer, Emailer)
-        self.assertTrue(test_emailer.logged_in)
+        self.assertTrue(test_emailer.connected)
         test_emailer._logout()
-        self.assertFalse(test_emailer.logged_in)
+        self.assertFalse(test_emailer.connected)
         self.assertEqual(instance.quit.call_count, 1)
 
     @mock.patch('auto_emailer.emailer.Path')

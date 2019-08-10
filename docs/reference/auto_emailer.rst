@@ -1,11 +1,6 @@
 auto\_emailer package
 =====================
 
-.. automodule:: auto_emailer
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
 Subpackages
 -----------
 
@@ -16,6 +11,19 @@ Subpackages
 Submodules
 ----------
 
-.. toctree::
+auto\_emailer.emailer module
+----------------------------
 
-   auto_emailer.emailer
+.. automodule:: auto_emailer.emailer
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+
+Module contents
+---------------
+
+.. automodule:: auto_emailer
+   :members:
+   :undoc-members:
+   :show-inheritance:

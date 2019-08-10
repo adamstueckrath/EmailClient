@@ -83,7 +83,7 @@ def default_credentials():
     order:
 
     1. If the environment variable
-       `auto_emailer.config.environment_vars.EMAILER_SENDER` is set to the
+       `auto_emailer.config.environment_vars.EMAILER_CREDS` is set to the
        path of a valid JSON file, then it is loaded and returned.
     2. If explicit environment variables are set `EMAILER_`, then the
        credentials are loaded and returned.
