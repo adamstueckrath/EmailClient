@@ -140,7 +140,8 @@ class Emailer:
             encoders.encode_base64(part)
             # add header as to attachment part
             part.add_header('Content-Disposition',
-                            'attachment', filename=os.path.basename(path))
+                            'attachment',
+                            filename=os.path.basename(path))
             message.attach(part)
 
         # log in to email client if not already.
@@ -160,3 +161,26 @@ class Emailer:
                                 message.as_string())
         finally:
             self._logout()
+
+
+class Message:
+    def __init__(self, ):
+        """
+        Args:
+            config (Optional(config.credentials.Credentials)): The constructed
+                credentials. Can be None if environment variables are
+                configured.
+            delay_login (bool): If True, no login attempt will be made until
+                send_mail is called. Otherwise, a login attempt will be made at
+                class initialization.
+        """
+        self.subject = subject or ''
+        self.sender = sender
+        self.receivers = receivers
+        self.authors = authors
+        self.cc = cc
+        self.bcc = bcc
+
+        self._connected = False
+        if not delay_login:
+            self._login()

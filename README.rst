@@ -49,19 +49,6 @@ Supported Python Versions
 
 Python >= 3.6
 
-Usage
------
-
-If you want to use the emailing features of this library, then you can
-either explicitly pass arguments to
-``auto_emailer.config.crendentials.Credentials`` to authenticate your
-SMTP client or you can set the environment variables ``EMAILER_SENDER``
-*AND* ``EMAIL_PASSWORD``. In most cases, these two environment variables
-will be enough, but if authentication is failing then you may need to
-further specify the environment variables ``EMAILER_HOST`` and ``EMAILER_PORT``.
-
-For more advance configurations, please see the user guide and quick start guide.
-
 Docs
 ----
 

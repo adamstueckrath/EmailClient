@@ -14,14 +14,19 @@ then initiate emailer with those credentials.
 With the Credentials class, you do not need to set the port or host, though it
 is HIGHLY recommended that you do. The Credentials class will set the port to a
 default value of 587 if is not set and will attempt to guess the host from the
-sender email address if host is not set. You can find a list of SMTP host it
-will try to reference here: [ADD LINK TO QUICK START GUIDE TABLE].
+sender email address if host is not set.
 
-This library provides no support for obtaining user credentials, but does
-provide support for using user credentials. This way you don’t have to worry
-about accidentally pushing sensitive credentials to a place such as GitHub and
-you can easily and securely authenticate the SMTP client within your code. The
-auto-emailer environment variables all start with ``EMAILER_``.
+SMTP clients in which ``EMAILER_HOST`` and ``EMAILER_PORT`` will
+be auto configured. This means you only need to specify ``EMAILER_SENDER`` and
+``EMAILER_PASSWORD``.
+
+==================   ====================
+Provider             SMTP Server
+==================   ====================
+Gmail                smtp.gmail.com
+Outlook/Hotmail	     smtp.office365.com
+Yahoo Mail           smtp.mail.yahoo.com
+==================   ====================
 
 Auto Credentials
 ----------------
@@ -155,7 +160,8 @@ email account setup and credentials configured, all you need to do is this::
 
     # send email!
     my_emailer.send_email(['my_friend@gmail.com'],
-                          'Hello Friend!', text='How are you doing?')
+                          'Hello Friend!',
+                          text='How are you doing?')
 
 
 Send Emails from Templates
@@ -188,7 +194,8 @@ open the template text file, read the text and add it as the body of the email::
 
     # send email with template!
     my_emailer.send_email(['my_friend@gmail.com'],
-                          'Hello Friend!', template_path=my_template)
+                          'Hello Friend!',
+                          template_path=my_template)
 
 
 
@@ -248,7 +255,8 @@ attach audio files.::
     my_emailer = emailer.Emailer()
 
     # email template file path
-    files = ['/path/to/attachment_1.csv', '/path/to/attachment_2.png']
+    files = ['/path/to/attachment_1.csv',
+             '/path/to/attachment_2.png']
 
     # send email with attachments!
     my_emailer.send_email(['my_friend@gmail.com'],
