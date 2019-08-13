@@ -1,4 +1,5 @@
 import os
+import time
 import datetime
 
 import smtplib
@@ -76,6 +77,72 @@ class Emailer:
         self._smtp.login(self._config.sender_email, self._config.password)
         self._connected = True
 
+    def send_email(self, message, from_addr=None,
+                   to_addrs=None, delay_send=0):
+
+        if not isinstance(message, Message) and isinstance(message, str):
+            delivery_meth = 'sendmail'
+        elif isinstance(message, Message):
+            delivery_meth = 'send_message'
+            message = message.message
+        else:
+            raise ValueError('Hey bitch')
+
+        # delay sending by input value
+        if delay_send:
+            time.sleep(delay_send)
+
+        # log in to email client if not already.
+        if not self._connected:
+            self._login()
+
+        # handle disconnect and connection errors by
+        # quick login and attempt to send again
+        try:
+            method = getattr(self._smtp, delivery_meth)
+            method(msg=message, from_addr=from_addr,
+                   to_addrs=to_addrs)
+        except (smtplib.SMTPConnectError, smtplib.SMTPServerDisconnected):
+            self._login()
+            # needs to call getattr() again once it hits
+            # here otherwise it will fail
+            method = getattr(self._smtp, delivery_meth)
+            method(msg=message, from_addr=from_addr,
+                   to_addrs=to_addrs)
+        finally:
+            self._logout()
+
+
+class Message:
+    def __init__(self, sender, destinations, subject=None, cc=None, bcc=None):
+
+        """Send an email to given destination list. The email will auto fill
+        the FROM with `Email._config.EMAILER_SENDER` and quit after email
+        is sent.
+
+        Args:
+            destinations (Sequence[str]): List of strings of email
+                addresses to send the email to.
+            subject (str): Subject of your email.
+            text (Optional[str]): The body text of your email.
+            template_path (Optional[str]): File path of an email template
+                text to use for the email body.
+            template_args (Optional[dict]): Keyword arguments to format
+                the email template text.
+            attach_files (Sequence[str]): List of string file paths
+                to attached to email.
+        """
+        # create multi-part message for text and attachments
+        self.sender = sender
+        self.destinations = destinations
+        self.subject = subject
+        self.cc = cc or []
+        self.bcc = bcc or []
+        self.message = MIMEMultipart()
+
+    def __str__(self):
+        return self.message.as_string()
+
     @staticmethod
     def email_template(template_path):
         """Opens, reads, and returns the given template file path as a string.
@@ -97,30 +164,14 @@ class Emailer:
                                     .format(template_path))
         return template_text
 
-    def send_email(self, destinations, subject, text=None,
-                   template_path=None, template_args=None, attach_files=None):
-        """Send an email to given destination list. The email will auto fill
-        the FROM with `Email._config.EMAILER_SENDER` and quit after email
-        is sent.
-
-        Args:
-            destinations (Sequence[str]): List of strings of email
-                addresses to send the email to.
-            subject (str): Subject of your email.
-            text (Optional[str]): The body text of your email.
-            template_path (Optional[str]): File path of an email template
-                text to use for the email body.
-            template_args (Optional[dict]): Keyword arguments to format
-                the email template text.
-            attach_files (Sequence[str]): List of string file paths
-                to attached to email.
-        """
-        # create multi-part message for text and attachments
-        message = MIMEMultipart()
-        message['From'] = self._config.sender_email
-        message['To'] = '; '.join(destinations)
-        message['Date'] = datetime.datetime.utcnow().isoformat()
-        message['Subject'] = subject
+    def draft_message(self, text=None, template_path=None,
+                      template_args=None):
+        self.message['From'] = self.sender
+        self.message['To'] = '; '.join(self.destinations)
+        self.message['BCC'] = '; '.join(self.bcc)
+        self.message['CC'] = '; '.join(self.cc)
+        self.message['Date'] = datetime.datetime.utcnow().isoformat()
+        self.message['Subject'] = self.subject
 
         # check if email template is used
         if template_path:
@@ -128,9 +179,13 @@ class Emailer:
             text = text.format(**template_args)
 
         # attach text part of message
-        message.attach(MIMEText(text))
+        self.message.attach(MIMEText(text))
+        # return self to encourage method cascading
+        return self
 
+    def attach(self, attach_files=None):
         # iterate through files to attach
+
         for path in attach_files or []:
             part = MIMEBase('application', "octet-stream")
             with open(path, 'rb') as file:
@@ -142,45 +197,5 @@ class Emailer:
             part.add_header('Content-Disposition',
                             'attachment',
                             filename=os.path.basename(path))
-            message.attach(part)
-
-        # log in to email client if not already.
-        if not self._connected:
-            self._login()
-
-        # handle disconnect and connection errors by
-        # quick login and attempt to send again
-        try:
-            self._smtp.sendmail(self._config.sender_email,
-                                destinations,
-                                message.as_string())
-        except (smtplib.SMTPConnectError, smtplib.SMTPServerDisconnected):
-            self._login()
-            self._smtp.sendmail(self._config.sender_email,
-                                destinations,
-                                message.as_string())
-        finally:
-            self._logout()
-
-
-class Message:
-    def __init__(self, ):
-        """
-        Args:
-            config (Optional(config.credentials.Credentials)): The constructed
-                credentials. Can be None if environment variables are
-                configured.
-            delay_login (bool): If True, no login attempt will be made until
-                send_mail is called. Otherwise, a login attempt will be made at
-                class initialization.
-        """
-        self.subject = subject or ''
-        self.sender = sender
-        self.receivers = receivers
-        self.authors = authors
-        self.cc = cc
-        self.bcc = bcc
-
-        self._connected = False
-        if not delay_login:
-            self._login()
+            self.message.attach(part)
+        return self
