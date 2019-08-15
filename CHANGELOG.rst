@@ -8,9 +8,8 @@ Changelog <https://keepachangelog.com/en/1.0.0/>`__, and this project
 adheres to `Semantic
 Versioning <https://semver.org/spec/v2.0.0.html>`__.
 
-
 Guiding Principles
-^^^^^^^^^^^^^^^^^^
+
 -  Changelogs are for humans, not machines.
 -  There should be an entry for every single version.
 -  The same types of changes should be grouped.
@@ -19,7 +18,7 @@ Guiding Principles
 -  The release date of each version is displayed.
 
 Types of changes
-^^^^^^^^^^^^^^^^
+
 -  ``Added`` for new features.
 -  ``Changed`` for changes in existing functionality.
 -  ``Deprecated`` for soon-to-be removed features.

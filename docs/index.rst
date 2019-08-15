@@ -10,6 +10,7 @@ Welcome to auto-emailer's documentation!
    :maxdepth: 2
 
    readme
+   Quickstart <quick-start>
    User Guide <user-guide>
    Reference <reference/modules>
    changelog

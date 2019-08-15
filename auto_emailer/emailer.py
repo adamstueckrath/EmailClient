@@ -1,6 +1,5 @@
 import os
 import time
-import datetime
 
 import smtplib
 from pathlib import Path
@@ -55,8 +54,7 @@ class Emailer:
 
     @property
     def connected(self):
-        """Returns:
-            bool: If SMTP client is logged in or not.
+        """Return: bool: If SMTP client is logged in or not.
         """
         return self._connected
 
@@ -102,9 +100,9 @@ class Emailer:
         more than one set of 'Resent-' headers).
 
         Args:
-            message (Union[auto_emailer.Message, str]): The message may
+            message (Union[auto_emailer.emailer.Message, str]): The message may
                 either be a string containing characters in the ASCII
-                range, or an `auto_emailer.Message` object.
+                range, or an `auto_emailer.emailer.Message` object.
             from_addr (Optional[str]): The address sending the mail.
             to_addrs (Optional(Sequence[str])): A list of addresses to
                 send the email to. A bare string will be treated as a
@@ -115,13 +113,12 @@ class Emailer:
         Raises:
             ValueError: If sending a string email and from_addr or to_addr
                 is None.
-            ValueError: If the message is not an auto_emailer.Message object
-                or a string.
+            ValueError: If the message is not an auto_emailer.emailer.Message
+                object or a string.
         """
-
         if not isinstance(message, Message) and isinstance(message, str):
             smtp_meth = 'sendmail'
-            if from_addr or to_addrs is None:
+            if (from_addr is None) or (to_addrs is None):
                 raise ValueError('If sending string email, please provide '
                                  'from_addr and to_addrs.')
         elif isinstance(message, Message):
@@ -129,7 +126,7 @@ class Emailer:
             message = message.message
         else:
             raise ValueError('The message argument must either be an '
-                             'auto_emailer.Message object or a string.')
+                             'auto_emailer.emailer.Message object or a string.')
 
         # delay sending by input value
         if delay_send:
@@ -204,28 +201,26 @@ class Message:
                                     .format(template_path))
         return template_text
 
-    def draft_message(self, text=None, template_path=None,
-                      template_args=None):
+    def draft_message(self, text=None, template_path=None, template_args=None):
         """Create, or draft, the `self.message` instance attribute with
         string text or text file templates. Return self from the instance
-        to allow method chaining of `auto_emailer.Message.attach`.
+        to allow method chaining of `auto_emailer.emailer.Message.attach`.
 
         Args:
             text (Optional[str]): The body text of your email message.
-            template_path (Optional(Sequence[str])): File path of a text
+            template_path (Optional[str]): File path of a text
                 template to use for the email message body.
             template_args (Optional[dict]): Keyword arguments to format
                 the email message template text.
 
         Returns:
             auto_emailer.emailer.Message: The instance of
-                auto_emailer.email.Message.
+            auto_emailer.emailer.Message.
         """
         self.message['From'] = self.sender
         self.message['To'] = '; '.join(self.destinations)
         self.message['BCC'] = '; '.join(self.bcc)
         self.message['CC'] = '; '.join(self.cc)
-        self.message['Date'] = datetime.datetime.utcnow().isoformat()
         self.message['Subject'] = self.subject
 
         # check if email template is used
@@ -249,7 +244,7 @@ class Message:
 
         Returns:
             auto_emailer.emailer.Message: The instance of
-                auto_emailer.email.Message.
+            auto_emailer.emailer.Message.
         """
         # iterate through files to attach
         for path in attach_files or []:
