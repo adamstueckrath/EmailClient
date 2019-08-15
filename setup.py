@@ -1,8 +1,8 @@
 from setuptools import setup
 
 setup(name='auto_emailer',
-      version='0.0.1',
-      description='auto-emailer Library for Python',
+      version='1.0.0',
+      description='auto-emailer library for Python',
       author='Adam Stueckrath',
       author_email='stueckrath.adam@gmail.com',
       url='',

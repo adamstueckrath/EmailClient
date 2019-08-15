@@ -16,16 +16,16 @@ class Credentials:
         Args:
             sender_email (Optional[str]): The user name to authenticate SMTP
                 client. Can be None if environment variables are configured.
-                Equivalent environment variable: `emailer_address`.
+                Equivalent environment variable: `EMAILER_SENDER`.
             password (Optional[str]): The password to authenticate SMTP client.
                 Can be None if environment variables are configured.
-                Equivalent environment variable: `emailer_password`.
+                Equivalent environment variable: `EMAILER_PASSWORD`.
             port (Optional[str]): The port number of SMTP server.
-                Equivalent environment variable: `emailer_port`.
+                Equivalent environment variable: `EMAILER_HOST`.
                 If neither config nor environment variable are set, then it
                 will default to 587.
             host (Optional[str]): Host name of SMTP server.
-                Equivalent environment variable: `emailer_host`.
+                Equivalent environment variable: `EMAILER_PORT`.
                 If neither config nor environment variable are set, then it
                 will attempt to guess the host from the `emailer_address`.
 
@@ -41,8 +41,8 @@ class Credentials:
             warnings.warn('If explicitly passing args to initialize '
                           'Credentials, please pass in `port` and `host` or '
                           'use environment variables for configuration '
-                          '{} and {}'.format(environment_vars.ENVIR_PORT,
-                                             environment_vars.ENVIR_HOST)
+                          '{} and {}'.format(environment_vars.EMAILER_PORT,
+                                             environment_vars.EMAILER_HOST)
                           )
 
     @property
@@ -67,9 +67,9 @@ class Credentials:
 
     @staticmethod
     def fill_missing_user_info(info):
-        """Fills in automatically assigns `emailer_port` or `emailer_host` if
+        """Fills in automatically assigns `EMAILER_PORT` or `EMAILER_HOST` if
         they not set. Sets the default port to 587 and attempts to guess the
-        host from the `emailer_sender`.
+        host from the `EMAILER_SENDER`.
 
         Args:
             info (dict): Config dictionary object in auto_emailer format for
@@ -80,25 +80,25 @@ class Credentials:
             dict: Dictionary object with missing information filled.
 
         Raises:
-            ValueError: If it cannot guess `emailer_host` from `emailer_sender`.
+            ValueError: If it cannot guess `EMAILER_HOST` from `EMAILER_SENDER`.
         """
         if not info or not isinstance(info, dict):
             return info
 
-        if (info['emailer_port'] is None) or (info['emailer_port'] is ""):
-            info['emailer_port'] = 587
+        if (info['EMAILER_PORT'] is None) or (info['EMAILER_PORT'] is ""):
+            info['EMAILER_PORT'] = 587
 
-        if (info['emailer_host'] is None) or (info['emailer_host'] is ""):
-            if ('@outlook.com' in info['emailer_sender']) or \
-                    ('@hotmail.com' in info['emailer_sender']):
-                info['emailer_host'] = 'smtp.office365.com'
-            elif '@gmail.com' in info['emailer_sender']:
-                info['emailer_host'] = 'smtp.gmail.com'
-            elif '@yahoo.com' in info['emailer_sender']:
-                info['emailer_host'] = 'smtp.mail.yahoo.com'
+        if (info['EMAILER_HOST'] is None) or (info['EMAILER_HOST'] is ""):
+            if ('@outlook.com' in info['EMAILER_SENDER']) or \
+                    ('@hotmail.com' in info['EMAILER_SENDER']):
+                info['EMAILER_HOST'] = 'smtp.office365.com'
+            elif '@gmail.com' in info['EMAILER_SENDER']:
+                info['EMAILER_HOST'] = 'smtp.gmail.com'
+            elif '@yahoo.com' in info['EMAILER_SENDER']:
+                info['EMAILER_HOST'] = 'smtp.mail.yahoo.com'
             else:
                 raise ValueError('Cannot guess host given email. '
-                                 'Please explicitly set `emailer_host`.')
+                                 'Please explicitly set `EMAILER_HOST`.')
 
         return info
 
@@ -119,8 +119,8 @@ class Credentials:
             ValueError: If the authorized user info is not in the expected
                 format (missing keys).
         """
-        keys_needed = {'emailer_sender', 'emailer_password',
-                       'emailer_port', 'emailer_host'}
+        keys_needed = {'EMAILER_SENDER', 'EMAILER_PASSWORD',
+                       'EMAILER_HOST', 'EMAILER_PORT'}
         missing = keys_needed.difference(six.iterkeys(info))
 
         if missing:
@@ -132,10 +132,10 @@ class Credentials:
         cls.fill_missing_user_info(info)
 
         return Credentials(
-            sender_email=info['emailer_sender'],
-            password=info['emailer_password'],
-            host=info['emailer_host'],
-            port=info['emailer_port'])
+            sender_email=info['EMAILER_SENDER'],
+            password=info['EMAILER_PASSWORD'],
+            host=info['EMAILER_HOST'],
+            port=info['EMAILER_PORT'])
 
     @classmethod
     def from_authorized_user_file(cls, file_name):

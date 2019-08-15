@@ -1,12 +1,12 @@
 auto-emailer
-==========================
+============
 
 |Build Status| |GitHub| |Maintenance|
 
-A wrapper library around python's SMTP (Simple Mail Transfer Protocol) library
-for making emails easier. Python makes sending email relatively easy via the
-smtplib module, but this library makes it even *easier* with auto-configuration
-and email templates.
+A wrapper library around python's SMTP (Simple Mail Transfer Protocol) and email
+libraries for making emails easier. Python makes sending email relatively easy
+via the smtplib module, but this library makes it even *easier* with
+auto-configuration and email templates.
 
 Table of Contents
 -----------------
@@ -20,7 +20,7 @@ Table of Contents
 7.  `License <#license>`__
 
 Background
-------------
+----------
 
 Let's say you’re automating a task that takes a couple of hours to do,
 and you don’t want to go back to your computer every few minutes to
@@ -34,7 +34,7 @@ thousands, of emails, you just write a few lines of code to auto-mate
 the process and you're done.
 
 Installing
-------------
+----------
 
 You can install using `pip`_::
 
@@ -49,25 +49,10 @@ Supported Python Versions
 
 Python >= 3.6
 
-Usage
-------------
-
-If you want to use the emailing features of this library, then you can
-either explicitly pass arguments to ``Credentials`` to authenticate your
-SMTP client or you can set the environment variables ``EMAILER_SENDER``
-*AND* ``EMAIL_PASSWORD``. In most cases, these two environment variables
-will be enough, but if authentication is failing then you may need to
-further specify the environment variables ``EMAILER_HOST`` and
-``EMAILER_PORT``.
-
-For more advance configurations, please see the configuration docs
-[PLACEHOLDER FOR LINK]. Once again, you can avoid environment variables
-and pass the appropriate credentials in inside your code.
-
 Docs
-------------
+----
 
-auto-emailer Python Library has usage and reference documentation at
+auto-emailer python library has usage and reference documentation at
 `auto-emailer.readthedocs.io <https://auto-emailer.readthedocs.io>`_.
 
 Maintainers
@@ -91,9 +76,9 @@ License
 
 `MIT <https://github.com/adamstueckrath/auto-emailer/blob/master/LICENSE.txt>`__ © Adam Stueckrath
 
-.. |Build Status| image:: https://travis-ci.org/adamstueckrath/AutoEmailer.svg?branch=master
+.. |Build Status| image:: https://travis-ci.org/adamstueckrath/auto-emailer.svg?branch=master
    :target: https://travis-ci.org/adamstueckrath/auto-emailer
-.. |GitHub| image:: https://img.shields.io/github/license/adamstueckrath/AutoEmailer
+.. |GitHub| image:: https://img.shields.io/github/license/adamstueckrath/auto-emailer
    :target: https://github.com/adamstueckrath/auto-emailer/blob/master/LICENSE.txt
 .. |Maintenance| image:: https://img.shields.io/maintenance/yes/2019
    :target: https://github.com/adamstueckrath/auto-emailer/graphs/commit-activity

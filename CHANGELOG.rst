@@ -9,7 +9,6 @@ adheres to `Semantic
 Versioning <https://semver.org/spec/v2.0.0.html>`__.
 
 Guiding Principles
-------------------
 
 -  Changelogs are for humans, not machines.
 -  There should be an entry for every single version.
@@ -19,7 +18,6 @@ Guiding Principles
 -  The release date of each version is displayed.
 
 Types of changes
-----------------
 
 -  ``Added`` for new features.
 -  ``Changed`` for changes in existing functionality.
@@ -28,15 +26,9 @@ Types of changes
 -  ``Fixed`` for any bug fixes.
 -  ``Security`` in case of vulnerabilities.
 
-[0.0.1]
+[1.0.0]
 -------
 
 Added
 ~~~~~
-
-Changed
-~~~~~~~
-
-Fixed
-~~~~~
-
+* Everything - will be adding notes soon :)

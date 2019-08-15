@@ -17,32 +17,32 @@ def _get_mock_credentials(file):
 
 class TestDefault(unittest.TestCase):
 
-    @mock.patch('os.environ', {'emailer_credentials': None})
+    @mock.patch('os.environ', {'EMAILER_CREDS': None})
     def test_explicit_environ_credential_no_file(self):
         """Test default._get_explicit_environ_credential_file
-        returns None if 'emailer_credentials' set to None.
+        returns None if 'EMAILER_CREDS' set to None.
         """
         test = default._get_explicit_environ_credential_file()
         self.assertEqual(test, None)
 
-    @mock.patch('os.environ', {'emailer_credentials': MOCK_USER_JSON_FILE})
+    @mock.patch('os.environ', {'EMAILER_CREDS': MOCK_USER_JSON_FILE})
     @mock.patch('auto_emailer.config.default.Credentials.from_authorized_user_file',
                 return_value=credentials.Credentials)
     def test_explicit_environ_credential_file(self, mock_creds):
         """Test default._get_explicit_environ_credential_file
         returns class credentials.Credentials class
-        if json file found in os.environ.get('emailer_credentials').
+        if json file found in os.environ.get('EMAILER_CREDS').
         """
         self.assertEqual(default._get_explicit_environ_credential_file(), credentials.Credentials)
         self.assertEqual(mock_creds.call_count, 1)
 
-    @mock.patch('os.environ', {'emailer_credentials': MOCK_USER_CSV_FILE})
+    @mock.patch('os.environ', {'EMAILER_CREDS': MOCK_USER_CSV_FILE})
     @mock.patch('auto_emailer.config.default.Credentials.from_authorized_user_file',
                 side_effect=ValueError)
     def test_explicit_environ_credential_bad_file(self, mock_creds):
         """Test default._get_explicit_environ_credential_file
         raises ValueError if file is not JSON and
-        found in os.environ.get('emailer_credentials').
+        found in os.environ.get('EMAILER_CREDS').
         """
         with self.assertRaises(ValueError):
             default._get_explicit_environ_credential_file()
@@ -55,7 +55,7 @@ class TestDefault(unittest.TestCase):
         """
         self.assertEqual(default._get_explicit_environ_credentials(), None)
 
-    @mock.patch('os.environ', {'emailer_sender': 'test@gmail.com', 'emailer_test': None})
+    @mock.patch('os.environ', {'EMAILER_SENDER': 'test@gmail.com', 'emailer_test': None})
     def test_get_explicit_environ_credentials_some_creds(self):
         """Test default._get_explicit_environ_credentials
         raises EnvironmentError if some variables are set but
@@ -88,7 +88,7 @@ class TestDefault(unittest.TestCase):
         self.assertEqual(mock_explicit.call_count, 1)
         self.assertEqual(mock_environ.call_count, 1)
 
-    @mock.patch('os.environ', {'emailer_credentials': MOCK_USER_JSON_FILE})
+    @mock.patch('os.environ', {'EMAILER_CREDS': MOCK_USER_JSON_FILE})
     @mock.patch("auto_emailer.config.default._get_explicit_environ_credential_file",
                 return_value=credentials.Credentials)
     @mock.patch("auto_emailer.config.default._get_explicit_environ_credentials",
@@ -96,7 +96,7 @@ class TestDefault(unittest.TestCase):
     def test_default_credentials_explicit_environ_credential_file(self, mock_environ, mock_explicit):
         """Test default.default_credentials returns
         credentials.Credentials class if json file found
-        in os.environ.get('emailer_credentials').
+        in os.environ.get('EMAILER_CREDS').
         """
         self.assertEqual(default.default_credentials(), credentials.Credentials)
         self.assertEqual(mock_explicit.call_count, 1)
