@@ -27,6 +27,5 @@ setup(name='auto_emailer',
 
             # Specify the Python versions you support here.
             "Programming Language :: Python :: 3.6",
-            "Programming Language :: Python :: 3.6.5",
             "Programming Language :: Python :: 3.7"]
       )
