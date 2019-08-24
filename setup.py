@@ -1,8 +1,13 @@
 from setuptools import setup
 
+with open("README.rst") as readme_file:
+    readme = readme_file.read()
+
 setup(name='auto_emailer',
-      version='1.0.0',
+      version='1.0.1',
       description='auto-emailer library for Python',
+      long_description=readme,
+      long_description_content_type='text/x-rst',
       author='Adam Stueckrath',
       author_email='stueckrath.adam@gmail.com',
       url='https://github.com/adamstueckrath/auto-emailer',
